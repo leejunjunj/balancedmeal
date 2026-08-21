@@ -282,6 +282,18 @@
             font-size: 0.8rem;
             font-weight: bold;
             color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .equiv-tag {
+            font-size: 0.72rem;
+            color: #2E7D32;
+            background: #E8F5E9;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 600;
         }
 
         .input-group input, .input-group select {
@@ -472,24 +484,36 @@
             <button class="tab-btn cheat-tab" onclick="switchTab('cheat')">🎉 치팅 데이!</button>
         </div>
 
-        <!-- 탭 1: 탄단지 & 식이섬유 입력 -->
+        <!-- 탭 1: 탄단지 & 식이섬유 입력 (음식 환산 수치 포함) -->
         <div id="macrosForm" class="form-section active">
             <div class="input-grid">
                 <div class="input-group">
-                    <label>탄수화물 (g)</label>
-                    <input type="number" id="inputCarb" placeholder="예: 200" value="200">
+                    <label>
+                        <span>탄수화물 (g)</span>
+                        <span id="carbEquiv" class="equiv-tag">🍚 약 2.9공기</span>
+                    </label>
+                    <input type="number" id="inputCarb" placeholder="예: 200" value="200" oninput="updateMacroEquivalents()">
                 </div>
                 <div class="input-group">
-                    <label>단백질 (g)</label>
-                    <input type="number" id="inputProtein" placeholder="예: 100" value="100">
+                    <label>
+                        <span>단백질 (g)</span>
+                        <span id="proteinEquiv" class="equiv-tag">🍗 약 4개</span>
+                    </label>
+                    <input type="number" id="inputProtein" placeholder="예: 100" value="100" oninput="updateMacroEquivalents()">
                 </div>
                 <div class="input-group">
-                    <label>지방 (g)</label>
-                    <input type="number" id="inputFat" placeholder="예: 50" value="50">
+                    <label>
+                        <span>지방 (g)</span>
+                        <span id="fatEquiv" class="equiv-tag">🥜 약 100알</span>
+                    </label>
+                    <input type="number" id="inputFat" placeholder="예: 50" value="50" oninput="updateMacroEquivalents()">
                 </div>
                 <div class="input-group">
-                    <label>식이섬유 (g)</label>
-                    <input type="number" id="inputFiber" placeholder="예: 25" value="25">
+                    <label>
+                        <span>식이섬유 (g)</span>
+                        <span id="fiberEquiv" class="equiv-tag">🥬 약 1통</span>
+                    </label>
+                    <input type="number" id="inputFiber" placeholder="예: 25" value="25" oninput="updateMacroEquivalents()">
                 </div>
             </div>
             <div class="input-grid">
@@ -605,6 +629,7 @@
             defaultEnd.setDate(defaultEnd.getDate() + 6);
             document.getElementById('calEndDate').value = getFormattedDate(defaultEnd);
 
+            updateMacroEquivalents();
             renderTodayMeals();
             renderCalendar();
         };
@@ -616,7 +641,26 @@
             return `${y}-${m}-${d}`;
         }
 
-        // --- 오늘의 식단 렌더링 (아침, 점심, 저녁 한 줄 동시 표시) ---
+        // --- 실물 음식 환산 수치 계산 (실시간 이벤트) ---
+        function updateMacroEquivalents() {
+            const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
+            const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
+            const fat = parseFloat(document.getElementById('inputFat').value) || 0;
+            const fiber = parseFloat(document.getElementById('inputFiber').value) || 0;
+
+            // 평균 기준: 쌀밥 1공기(70g), 닭가슴살 1개(25g), 아몬드 1알(0.5g), 양배추 1통(25g)
+            const riceBowls = (carb / 70).toFixed(1);
+            const chickenBreasts = (protein / 25).toFixed(1);
+            const almonds = Math.round(fat / 0.5);
+            const cabbages = (fiber / 25).toFixed(1);
+
+            document.getElementById('carbEquiv').innerText = `🍚 약 ${riceBowls}공기`;
+            document.getElementById('proteinEquiv').innerText = `🍗 약 ${chickenBreasts}개`;
+            document.getElementById('fatEquiv').innerText = `🥜 약 ${almonds}알`;
+            document.getElementById('fiberEquiv').innerText = `🥬 약 ${cabbages}통`;
+        }
+
+        // --- 오늘의 식단 렌더링 ---
         function renderTodayMeals() {
             const todayKey = getFormattedDate(new Date());
             document.getElementById('todayDateStr').innerText = todayKey;
