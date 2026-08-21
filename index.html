@@ -59,10 +59,10 @@
             border-radius: var(--radius);
             padding: 18px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
-        /* 1. 오늘의 식단 섹션 (한 줄 3칸 박스) */
+        /* 1. 오늘의 식단 섹션 */
         .today-header {
             display: flex;
             justify-content: space-between;
@@ -80,16 +80,18 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
+            margin-bottom: 12px;
         }
 
         .meal-box {
             background: var(--primary-light);
             border-radius: 12px;
-            padding: 12px 8px;
+            padding: 10px 8px;
             border-top: 4px solid var(--primary);
             min-height: 110px;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             transition: all 0.2s;
         }
 
@@ -102,12 +104,12 @@
             font-size: 0.82rem;
             font-weight: bold;
             color: #1B5E20;
-            margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 2px;
+            margin-bottom: 4px;
         }
 
         .meal-box.is-cheat .meal-box-header {
@@ -124,14 +126,65 @@
         }
 
         .meal-box-content {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
             line-height: 1.35;
             color: #1E293B;
             word-break: keep-all;
+            flex-grow: 1;
         }
 
-        /* 2. 캘린더 섹션 */
+        .meal-cal-badge {
+            font-size: 0.72rem;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-top: 6px;
+            background: rgba(255,255,255,0.7);
+            padding: 2px 4px;
+            border-radius: 4px;
+            text-align: right;
+        }
+
+        .today-total-bar {
+            background: #F1F5F9;
+            padding: 10px 14px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.88rem;
+            font-weight: bold;
+        }
+
+        /* 2. 통계 요약 카드 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat-box {
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            border-radius: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        /* 3. 캘린더 섹션 */
         .calendar-controls {
             display: flex;
             justify-content: space-between;
@@ -155,13 +208,7 @@
             border: 1px solid var(--primary);
         }
 
-        .calendar-grid-week {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-        }
-
-        .calendar-grid-month {
+        .calendar-grid-week, .calendar-grid-month {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 6px;
@@ -171,16 +218,12 @@
             background: #FAFAFA;
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 8px 4px;
-            min-height: 110px;
+            padding: 6px 4px;
+            min-height: 115px;
             display: flex;
             flex-direction: column;
             cursor: pointer;
             transition: border 0.2s;
-        }
-
-        .day-card:hover {
-            border-color: var(--primary);
         }
 
         .day-card.today {
@@ -190,9 +233,9 @@
 
         .day-number {
             font-weight: bold;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: #475569;
         }
 
@@ -201,11 +244,11 @@
         }
 
         .day-meal {
-            font-size: 0.68rem;
-            margin-top: 3px;
-            padding: 3px 4px;
+            font-size: 0.65rem;
+            margin-top: 2px;
+            padding: 2px 3px;
             background: #FFFFFF;
-            border-radius: 5px;
+            border-radius: 4px;
             border: 1px solid #E2E8F0;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -219,12 +262,17 @@
             font-weight: bold;
         }
 
-        .day-meal span {
+        .day-cal-total {
+            font-size: 0.65rem;
             font-weight: bold;
-            color: var(--primary);
+            color: var(--primary-dark);
+            text-align: center;
+            margin-top: auto;
+            padding-top: 4px;
+            border-top: 1px dashed var(--border);
         }
 
-        /* 3. 식단 생성 & 입력 폼 섹션 */
+        /* 4. 입력 폼 섹션 (그람수 바로 옆 환산 수치) */
         .tab-group {
             display: flex;
             gap: 6px;
@@ -244,7 +292,6 @@
             cursor: pointer;
             font-size: 0.82rem;
             color: #64748B;
-            transition: all 0.2s;
         }
 
         .tab-btn.active {
@@ -257,22 +304,11 @@
             color: var(--cheat-color);
         }
 
-        .form-section {
-            display: none;
-        }
-
-        .form-section.active {
-            display: block;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
 
         .input-group {
+            margin-bottom: 12px;
             display: flex;
             flex-direction: column;
             gap: 4px;
@@ -284,7 +320,15 @@
             color: var(--text-muted);
         }
 
-        .input-group input, .input-group select {
+        /* 입력창과 환산 텍스트 한 줄 정렬 */
+        .input-inline-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-inline-wrap input {
+            width: 100px;
             padding: 10px;
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -292,16 +336,21 @@
             outline: none;
         }
 
-        .input-group input:focus, .input-group select:focus {
+        .input-inline-wrap input:focus {
             border-color: var(--primary);
         }
 
-        .hint-text {
-            font-size: 0.76rem;
+        .hint-text-inline {
+            font-size: 0.8rem;
             color: #2E7D32;
             font-weight: 600;
-            margin-top: 2px;
-            display: block;
+            white-space: nowrap;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
         .focus-options {
@@ -402,8 +451,8 @@
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 8px;
-            font-size: 0.88rem;
-            line-height: 1.5;
+            font-size: 0.85rem;
+            line-height: 1.45;
             border-left: 4px solid var(--primary);
         }
 
@@ -420,7 +469,7 @@
         <h1>🥗 스마트 식단 플래너</h1>
     </header>
 
-    <!-- 상단: 오늘의 식단 -->
+    <!-- 1. 상단: 오늘의 식단 -->
     <section class="card">
         <div class="today-header">
             <span class="today-title">📌 오늘의 식단</span>
@@ -435,6 +484,7 @@
                     <span id="breakfastCheatTag" class="cheat-tag" style="display:none;">치팅</span>
                 </div>
                 <div id="todayBreakfastContent" class="meal-box-content">등록 없음</div>
+                <div id="breakfastCal" class="meal-cal-badge">- kcal</div>
             </div>
 
             <!-- 점심 -->
@@ -444,6 +494,7 @@
                     <span id="lunchCheatTag" class="cheat-tag" style="display:none;">치팅</span>
                 </div>
                 <div id="todayLunchContent" class="meal-box-content">등록 없음</div>
+                <div id="lunchCal" class="meal-cal-badge">- kcal</div>
             </div>
 
             <!-- 저녁 -->
@@ -453,11 +504,40 @@
                     <span id="dinnerCheatTag" class="cheat-tag" style="display:none;">치팅</span>
                 </div>
                 <div id="todayDinnerContent" class="meal-box-content">등록 없음</div>
+                <div id="dinnerCal" class="meal-cal-badge">- kcal</div>
+            </div>
+        </div>
+
+        <div class="today-total-bar">
+            <span>🔥 오늘 총 섭취 칼로리</span>
+            <span id="todayTotalCalDisplay" style="color:var(--primary-dark);">0 kcal</span>
+        </div>
+    </section>
+
+    <!-- 2. 주간 및 월간 칼로리 통계 요약 카드 -->
+    <section class="card">
+        <h2 style="font-size: 1.05rem; margin-bottom: 12px; color: var(--primary-dark);">📊 칼로리 통계 요약</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-label">이번 주 총 칼로리</span>
+                <span id="weekTotalCal" class="stat-value">0 kcal</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">이번 주 일평균</span>
+                <span id="weekAvgCal" class="stat-value">0 kcal</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">이번 달 총 칼로리</span>
+                <span id="monthTotalCal" class="stat-value">0 kcal</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">이번 달 일평균</span>
+                <span id="monthAvgCal" class="stat-value">0 kcal</span>
             </div>
         </div>
     </section>
 
-    <!-- 중단: 캘린더 -->
+    <!-- 3. 중단: 캘린더 -->
     <section class="card">
         <div class="calendar-controls">
             <div>
@@ -470,7 +550,7 @@
         <div id="calendarGrid" class="calendar-grid-week"></div>
     </section>
 
-    <!-- 하단: 식단 설정 폼 -->
+    <!-- 4. 하단: 식단 설정 폼 (입력창 바로 옆에 그림/실물 분량 표시) -->
     <section class="card">
         <h2 style="font-size: 1.05rem; margin-bottom: 12px;">⚙️ 식단 설정 및 치팅 데이</h2>
         
@@ -480,46 +560,52 @@
             <button class="tab-btn cheat-tab" onclick="switchTab('cheat')">🎉 치팅 데이!</button>
         </div>
 
-        <!-- 탭 1: 탄단지 & 식이섬유 그람(g) 입력 -->
+        <!-- 탭 1: 탄단지 & 식이섬유 입력 -->
         <div id="macrosForm" class="form-section active">
-            <div class="input-grid">
-                <!-- 탄수화물 -->
-                <div class="input-group">
-                    <label for="inputCarb">탄수화물 (g)</label>
-                    <input type="number" id="inputCarb" placeholder="예: 200" value="200" oninput="updateMacroEquivalents()">
-                    <span id="carbEquiv" class="hint-text">(🍚 쌀밥 약 2.9공기 분량)</span>
-                </div>
-
-                <!-- 단백질 -->
-                <div class="input-group">
-                    <label for="inputProtein">단백질 (g)</label>
-                    <input type="number" id="inputProtein" placeholder="예: 100" value="100" oninput="updateMacroEquivalents()">
-                    <span id="proteinEquiv" class="hint-text">(🍗 닭가슴살 약 4개 분량)</span>
-                </div>
-
-                <!-- 지방 -->
-                <div class="input-group">
-                    <label for="inputFat">지방 (g)</label>
-                    <input type="number" id="inputFat" placeholder="예: 50" value="50" oninput="updateMacroEquivalents()">
-                    <span id="fatEquiv" class="hint-text">(🥜 아몬드 약 100알 분량)</span>
-                </div>
-
-                <!-- 식이섬유 -->
-                <div class="input-group">
-                    <label for="inputFiber">식이섬유 (g)</label>
-                    <input type="number" id="inputFiber" placeholder="예: 25" value="25" oninput="updateMacroEquivalents()">
-                    <span id="fiberEquiv" class="hint-text">(🥬 양배추 약 1개 분량)</span>
+            <!-- 탄수화물 -->
+            <div class="input-group">
+                <label for="inputCarb">탄수화물 (g)</label>
+                <div class="input-inline-wrap">
+                    <input type="number" id="inputCarb" placeholder="200" value="200" oninput="updateMacroEquivalents()">
+                    <span id="carbEquiv" class="hint-text-inline">(🍚 쌀밥 약 2.9공기 분량)</span>
                 </div>
             </div>
 
-            <div class="input-grid">
+            <!-- 단백질 -->
+            <div class="input-group">
+                <label for="inputProtein">단백질 (g)</label>
+                <div class="input-inline-wrap">
+                    <input type="number" id="inputProtein" placeholder="100" value="100" oninput="updateMacroEquivalents()">
+                    <span id="proteinEquiv" class="hint-text-inline">(🍗 닭가슴살 약 4개 분량)</span>
+                </div>
+            </div>
+
+            <!-- 지방 -->
+            <div class="input-group">
+                <label for="inputFat">지방 (g)</label>
+                <div class="input-inline-wrap">
+                    <input type="number" id="inputFat" placeholder="50" value="50" oninput="updateMacroEquivalents()">
+                    <span id="fatEquiv" class="hint-text-inline">(🥜 아몬드 약 100알 분량)</span>
+                </div>
+            </div>
+
+            <!-- 식이섬유 -->
+            <div class="input-group">
+                <label for="inputFiber">식이섬유 (g)</label>
+                <div class="input-inline-wrap">
+                    <input type="number" id="inputFiber" placeholder="25" value="25" oninput="updateMacroEquivalents()">
+                    <span id="fiberEquiv" class="hint-text-inline">(🥬 양배추 약 1개 분량)</span>
+                </div>
+            </div>
+
+            <div class="input-grid" style="margin-top: 14px;">
                 <div class="input-group">
                     <label>시작일</label>
-                    <input type="date" id="macroStartDate">
+                    <input type="date" id="macroStartDate" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
                 </div>
                 <div class="input-group">
                     <label>적용 기간 (일)</label>
-                    <input type="number" id="macroDays" value="7" min="1" max="31">
+                    <input type="number" id="macroDays" value="7" min="1" max="31" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
                 </div>
             </div>
             <button class="action-btn" onclick="generateByMacros()">맞춤 식단 생성 및 컨펌</button>
@@ -527,9 +613,9 @@
 
         <!-- 탭 2: 칼로리 기준 -->
         <div id="caloriesForm" class="form-section">
-            <div class="input-group" style="margin-bottom: 12px;">
+            <div class="input-group">
                 <label>목표 하루 칼로리 (kcal)</label>
-                <input type="number" id="inputCalorie" placeholder="예: 2000" value="2000">
+                <input type="number" id="inputCalorie" placeholder="예: 2000" value="2000" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
             </div>
             <div style="margin-bottom: 12px;">
                 <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); display:block; margin-bottom: 6px;">영양 위주 선택</label>
@@ -542,11 +628,11 @@
             <div class="input-grid">
                 <div class="input-group">
                     <label>시작일</label>
-                    <input type="date" id="calStartDate">
+                    <input type="date" id="calStartDate" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
                 </div>
                 <div class="input-group">
                     <label>종료일</label>
-                    <input type="date" id="calEndDate">
+                    <input type="date" id="calEndDate" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
                 </div>
             </div>
             <button class="action-btn" onclick="generateByCalories()">칼로리 식단 추천 및 컨펌</button>
@@ -554,9 +640,9 @@
 
         <!-- 탭 3: 치팅 데이 설정 -->
         <div id="cheatForm" class="form-section">
-            <div class="input-group" style="margin-bottom: 12px;">
+            <div class="input-group">
                 <label>먹고 싶은 치팅 메뉴 🍕</label>
-                <input type="text" id="cheatMenuInput" placeholder="예: 양념치킨 & 맥주, 엽기떡볶이">
+                <input type="text" id="cheatMenuInput" placeholder="예: 양념치킨 & 맥주, 엽기떡볶이" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
             </div>
 
             <div class="cheat-presets">
@@ -570,11 +656,11 @@
             <div class="input-grid">
                 <div class="input-group">
                     <label>치팅 날짜</label>
-                    <input type="date" id="cheatDate">
+                    <input type="date" id="cheatDate" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
                 </div>
                 <div class="input-group">
                     <label>치팅 식사 타임</label>
-                    <select id="cheatMealType">
+                    <select id="cheatMealType" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
                         <option value="all">하루 전체 (자유식)</option>
                         <option value="breakfast">아침</option>
                         <option value="lunch" selected>점심</option>
@@ -586,11 +672,11 @@
         </div>
     </section>
 
-    <!-- 식단 확인 컨펌 모달 -->
+    <!-- 미리보기 모달 -->
     <div id="confirmModal" class="modal">
         <div class="modal-content">
             <div class="modal-title">📋 식단 미리보기 및 컨펌</div>
-            <p style="font-size:0.85rem; color:#666; margin-bottom:12px;">아래 식단으로 달력 및 오늘의 식단에 즉시 적용할까요?</p>
+            <p style="font-size:0.85rem; color:#666; margin-bottom:12px;">아래 식단으로 적용할까요?</p>
             <div id="previewList"></div>
             <div class="modal-actions">
                 <button class="btn" style="flex:1;" onclick="closeModal()">취소</button>
@@ -600,21 +686,19 @@
     </div>
 
     <script>
-        // --- 데이터 상태 ---
+        // --- 상태 관리 ---
         let currentCalendarMode = 'week'; 
         let calendarBaseDate = new Date();
         let selectedFocus = 'protein';
         let pendingPlan = [];
 
-        // 로컬스토리지 저장 데이터 불러오기
+        // 데이터 저장소
         let mealData = JSON.parse(localStorage.getItem('mealDataStore')) || {};
 
-        // 추천 메뉴 샘플 데이터
         const dbCarbs = ["현미밥 1공기", "잡곡밥", "찐 고구마 1개", "통밀 식빵 2장", "바나나 1개", "오트밀 죽"];
-        const dbProteins = ["닭가슴살 구이", "삶은 계란 2개", "소고기 우둔살", "연어 구이", "두부 구이", "돼지 안심 살코기"];
+        const dbProteins = ["닭가슴살 구이", "삶은 계란 2개", "소고기 우둔살", "연어 구이", "두부 구이", "돼지 안심"];
         const dbFibers = ["야채 샐러드", "브로콜리 데침", "방울토마토 10개", "사과 반 개", "나물 무침", "양배추 쌈"];
 
-        // 초기화
         window.onload = function() {
             const todayStr = getFormattedDate(new Date());
             document.getElementById('macroStartDate').value = todayStr;
@@ -628,6 +712,7 @@
             updateMacroEquivalents();
             renderTodayMeals();
             renderCalendar();
+            calculateStats();
         };
 
         function getFormattedDate(date) {
@@ -637,18 +722,13 @@
             return `${y}-${m}-${d}`;
         }
 
-        // --- 그람(g) 입력 시 실물 음식 환산 수치 계산 ---
+        // --- 그람수 입력 칸 바로 옆 실물 분량 계산 ---
         function updateMacroEquivalents() {
             const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
             const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
             const fat = parseFloat(document.getElementById('inputFat').value) || 0;
             const fiber = parseFloat(document.getElementById('inputFiber').value) || 0;
 
-            // 평균 기준 계산:
-            // 쌀밥 1공기(210g 기준) = 약 70g 탄수화물
-            // 닭가슴살 1개(100g 기준) = 약 25g 단백질
-            // 아몬드 1알 = 약 0.5g 지방
-            // 양배추 1개(약 1kg 기준) = 약 25g 식이섬유
             const riceBowls = (carb / 70).toFixed(1);
             const chickenBreasts = (protein / 25).toFixed(1);
             const almonds = Math.round(fat / 0.5);
@@ -660,18 +740,22 @@
             document.getElementById('fiberEquiv').innerText = `(🥬 양배추 약 ${cabbages}개 분량)`;
         }
 
-        // --- 오늘의 식단 렌더링 ---
+        // --- 오늘의 식단 및 칼로리 표시 ---
         function renderTodayMeals() {
             const todayKey = getFormattedDate(new Date());
             document.getElementById('todayDateStr').innerText = todayKey;
 
-            const updateSlot = (boxId, contentId, tagId, text) => {
+            const todayData = mealData[todayKey] || {};
+
+            const updateSlot = (boxId, contentId, tagId, calId, text, calValue) => {
                 const box = document.getElementById(boxId);
                 const content = document.getElementById(contentId);
                 const tag = document.getElementById(tagId);
+                const calBadge = document.getElementById(calId);
 
                 if (text) {
                     content.innerText = text;
+                    calBadge.innerText = `${calValue || 0} kcal`;
                     if (text.includes('[치팅]')) {
                         box.classList.add('is-cheat');
                         tag.style.display = 'inline-block';
@@ -681,15 +765,69 @@
                     }
                 } else {
                     content.innerText = "등록 없음";
+                    calBadge.innerText = "- kcal";
                     box.classList.remove('is-cheat');
                     tag.style.display = 'none';
                 }
             };
 
-            const todayData = mealData[todayKey] || {};
-            updateSlot('breakfastBox', 'todayBreakfastContent', 'breakfastCheatTag', todayData.breakfast);
-            updateSlot('lunchBox', 'todayLunchContent', 'lunchCheatTag', todayData.lunch);
-            updateSlot('dinnerBox', 'todayDinnerContent', 'dinnerCheatTag', todayData.dinner);
+            updateSlot('breakfastBox', 'todayBreakfastContent', 'breakfastCheatTag', 'breakfastCal', todayData.breakfast, todayData.bCal);
+            updateSlot('lunchBox', 'todayLunchContent', 'lunchCheatTag', 'lunchCal', todayData.lunch, todayData.lCal);
+            updateSlot('dinnerBox', 'todayDinnerContent', 'dinnerCheatTag', 'dinnerCal', todayData.dinner, todayData.dCal);
+
+            const total = (todayData.bCal || 0) + (todayData.lCal || 0) + (todayData.dCal || 0);
+            document.getElementById('todayTotalCalDisplay').innerText = `${total.toLocaleString()} kcal`;
+        }
+
+        // --- 주간 및 월간 칼로리 통계 자동 계산 ---
+        function calculateStats() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+
+            // 주간 범위 계산 (이번 주 일요일 ~ 토요일)
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay());
+            startOfWeek.setHours(0,0,0,0);
+
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(endOfWeek.getDate() + 6);
+            endOfWeek.setHours(23,59,59,999);
+
+            let weekTotal = 0;
+            let weekDaysCount = 0;
+
+            let monthTotal = 0;
+            let monthDaysCount = 0;
+
+            for (let dateKey in mealData) {
+                const item = mealData[dateKey];
+                const dayCal = (item.bCal || 0) + (item.lCal || 0) + (item.dCal || 0);
+
+                if (dayCal <= 0) continue;
+
+                const targetDate = new Date(dateKey + "T00:00:00");
+
+                // 주간 합계
+                if (targetDate >= startOfWeek && targetDate <= endOfWeek) {
+                    weekTotal += dayCal;
+                    weekDaysCount++;
+                }
+
+                // 월간 합계
+                if (targetDate.getFullYear() === currentYear && targetDate.getMonth() === currentMonth) {
+                    monthTotal += dayCal;
+                    monthDaysCount++;
+                }
+            }
+
+            const weekAvg = weekDaysCount > 0 ? Math.round(weekTotal / weekDaysCount) : 0;
+            const monthAvg = monthDaysCount > 0 ? Math.round(monthTotal / monthDaysCount) : 0;
+
+            document.getElementById('weekTotalCal').innerText = `${weekTotal.toLocaleString()} kcal`;
+            document.getElementById('weekAvgCal').innerText = `${weekAvg.toLocaleString()} kcal`;
+            document.getElementById('monthTotalCal').innerText = `${monthTotal.toLocaleString()} kcal`;
+            document.getElementById('monthAvgCal').innerText = `${monthAvg.toLocaleString()} kcal`;
         }
 
         // --- 캘린더 렌더링 ---
@@ -708,8 +846,7 @@
 
         function renderWeekView(container) {
             const startOfWeek = new Date(calendarBaseDate);
-            const dayOfWeek = startOfWeek.getDay();
-            startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek);
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 
             const endOfWeek = new Date(startOfWeek);
             endOfWeek.setDate(endOfWeek.getDate() + 6);
@@ -750,63 +887,54 @@
             const card = document.createElement('div');
             card.className = 'day-card';
 
-            const todayStr = getFormattedDate(new Date());
-            if (key === todayStr) card.classList.add('today');
+            if (key === getFormattedDate(new Date())) card.classList.add('today');
 
             const daysStr = ['일', '월', '화', '수', '목', '금', '토'];
             card.innerHTML = `<div class="day-number">${date.getDate()} (${daysStr[date.getDay()]})</div>`;
 
             if (mealData[key]) {
-                const appendMealSlot = (label, text) => {
+                const data = mealData[key];
+                const appendSlot = (label, text) => {
                     if (!text) return;
                     const isCheat = text.includes('[치팅]');
                     const slotClass = isCheat ? 'day-meal cheat-meal-slot' : 'day-meal';
-                    card.innerHTML += `<div class="${slotClass}"><span>${label}:</span> ${text.replace('[치팅] ', '')}</div>`;
+                    card.innerHTML += `<div class="${slotClass}">${label}: ${text.replace('[치팅] ', '')}</div>`;
                 };
 
-                appendMealSlot('아', mealData[key].breakfast);
-                appendMealSlot('점', mealData[key].lunch);
-                appendMealSlot('저', mealData[key].dinner);
+                appendSlot('아', data.breakfast);
+                appendSlot('점', data.lunch);
+                appendSlot('저', data.dinner);
+
+                const totalCal = (data.bCal || 0) + (data.lCal || 0) + (data.dCal || 0);
+                if (totalCal > 0) {
+                    card.innerHTML += `<div class="day-cal-total">${totalCal} kcal</div>`;
+                }
             }
 
             return card;
         }
 
         function toggleCalendarView() {
+            currentCalendarMode = (currentCalendarMode === 'week') ? 'month' : 'week';
+            document.getElementById('viewToggleBtn').innerText = (currentCalendarMode === 'week') ? '월간 보기' : '주간 보기';
+            renderCalendar();
+        }
+
+        function navigateCalendar(dir) {
             if (currentCalendarMode === 'week') {
-                currentCalendarMode = 'month';
-                document.getElementById('viewToggleBtn').innerText = '주간 보기';
+                calendarBaseDate.setDate(calendarBaseDate.getDate() + (dir * 7));
             } else {
-                currentCalendarMode = 'week';
-                document.getElementById('viewToggleBtn').innerText = '월간 보기';
+                calendarBaseDate.setMonth(calendarBaseDate.getMonth() + dir);
             }
             renderCalendar();
         }
 
-        function navigateCalendar(direction) {
-            if (currentCalendarMode === 'week') {
-                calendarBaseDate.setDate(calendarBaseDate.getDate() + (direction * 7));
-            } else {
-                calendarBaseDate.setMonth(calendarBaseDate.getMonth() + direction);
-            }
-            renderCalendar();
-        }
-
-        // --- 탭 전환 ---
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
 
-            if (tabName === 'macros') {
-                event.target.classList.add('active');
-                document.getElementById('macrosForm').classList.add('active');
-            } else if (tabName === 'calories') {
-                event.target.classList.add('active');
-                document.getElementById('caloriesForm').classList.add('active');
-            } else if (tabName === 'cheat') {
-                event.target.classList.add('active');
-                document.getElementById('cheatForm').classList.add('active');
-            }
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}Form`).classList.add('active');
         }
 
         function selectFocus(btn, type) {
@@ -819,35 +947,37 @@
             document.getElementById('cheatMenuInput').value = menuName;
         }
 
-        // --- 식단 자동 조합 기능 ---
         function getRandomItem(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
+        // --- 탄단지 기준 식단 생성 ---
         function generateByMacros() {
-            const carb = document.getElementById('inputCarb').value;
-            const protein = document.getElementById('inputProtein').value;
-            const fat = document.getElementById('inputFat').value;
-            const fiber = document.getElementById('inputFiber').value;
+            const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
+            const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
+            const fat = parseFloat(document.getElementById('inputFat').value) || 0;
             const startDateStr = document.getElementById('macroStartDate').value;
             const days = parseInt(document.getElementById('macroDays').value);
 
-            if (!startDateStr || !days) return alert("시작일과 적정 기간을 설정하세요.");
+            if (!startDateStr || !days) return alert("시작일과 적용 기간을 입력하세요.");
+
+            const totalCal = Math.round((carb * 4) + (protein * 4) + (fat * 9));
+            const bCal = Math.round(totalCal * 0.3);
+            const lCal = Math.round(totalCal * 0.4);
+            const dCal = Math.round(totalCal * 0.3);
 
             pendingPlan = [];
             let curr = new Date(startDateStr);
 
             for (let i = 0; i < days; i++) {
                 const dateKey = getFormattedDate(curr);
-                
-                const breakfast = `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}`;
-                const lunch = `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`;
-                const dinner = `${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`;
-
                 pendingPlan.push({
                     date: dateKey,
-                    breakfast, lunch, dinner,
-                    desc: `목표 영양: 탄 ${carb}g, 단 ${protein}g, 지 ${fat}g, 식이 ${fiber}g`
+                    breakfast: `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}`,
+                    lunch: `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`,
+                    dinner: `${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`,
+                    bCal, lCal, dCal,
+                    desc: `총 ${totalCal} kcal (아침:${bCal} / 점심:${lCal} / 저녁:${dCal})`
                 });
                 curr.setDate(curr.getDate() + 1);
             }
@@ -855,17 +985,20 @@
             showPreviewModal();
         }
 
+        // --- 칼로리 기준 식단 생성 ---
         function generateByCalories() {
-            const cal = document.getElementById('inputCalorie').value;
+            const cal = parseInt(document.getElementById('inputCalorie').value) || 2000;
             const startDateStr = document.getElementById('calStartDate').value;
             const endDateStr = document.getElementById('calEndDate').value;
 
-            if (!startDateStr || !endDateStr) return alert("날짜를 올바르게 지정해주세요.");
+            if (!startDateStr || !endDateStr) return alert("날짜를 지정해주세요.");
 
             let curr = new Date(startDateStr);
             let end = new Date(endDateStr);
 
-            if (curr > end) return alert("시작일은 종료일보다 이전이어야 합니다.");
+            const bCal = Math.round(cal * 0.3);
+            const lCal = Math.round(cal * 0.4);
+            const dCal = Math.round(cal * 0.3);
 
             pendingPlan = [];
 
@@ -890,7 +1023,8 @@
                 pendingPlan.push({
                     date: dateKey,
                     breakfast, lunch, dinner,
-                    desc: `목표: ${cal}kcal (${selectedFocus.toUpperCase()} 강조)`
+                    bCal, lCal, dCal,
+                    desc: `목표: ${cal} kcal`
                 });
 
                 curr.setDate(curr.getDate() + 1);
@@ -899,7 +1033,7 @@
             showPreviewModal();
         }
 
-        // --- 치팅 데이 등록 기능 ---
+        // --- 치팅 데이 추가 ---
         function addCheatMeal() {
             const menu = document.getElementById('cheatMenuInput').value;
             const dateKey = document.getElementById('cheatDate').value;
@@ -909,31 +1043,33 @@
 
             if (!mealData[dateKey]) {
                 mealData[dateKey] = {
-                    breakfast: "건강 클린식",
-                    lunch: "건강 클린식",
-                    dinner: "건강 클린식"
+                    breakfast: "건강 클린식", bCal: 400,
+                    lunch: "건강 클린식", lCal: 600,
+                    dinner: "건강 클린식", dCal: 500
                 };
             }
 
             const cheatFormat = `[치팅] ${menu}`;
+            const cheatCal = 900; // 치팅식 기본 추정 칼로리
 
             if (mealType === 'all') {
-                mealData[dateKey].breakfast = cheatFormat;
-                mealData[dateKey].lunch = cheatFormat;
-                mealData[dateKey].dinner = cheatFormat;
+                mealData[dateKey].breakfast = cheatFormat; mealData[dateKey].bCal = cheatCal;
+                mealData[dateKey].lunch = cheatFormat; mealData[dateKey].lCal = cheatCal;
+                mealData[dateKey].dinner = cheatFormat; mealData[dateKey].dCal = cheatCal;
             } else {
                 mealData[dateKey][mealType] = cheatFormat;
+                mealData[dateKey][`${mealType.charAt(0)}Cal`] = cheatCal;
             }
 
             localStorage.setItem('mealDataStore', JSON.stringify(mealData));
 
-            alert(`🎉 ${dateKey} 식단에 [${menu}] 치팅 메뉴가 추가되었습니다!`);
+            alert(`🎉 ${dateKey} 식단에 [${menu}] 치팅 데이가 등록되었습니다!`);
             renderTodayMeals();
             renderCalendar();
+            calculateStats();
             document.getElementById('cheatMenuInput').value = '';
         }
 
-        // --- 모달 처리 ---
         function showPreviewModal() {
             const listContainer = document.getElementById('previewList');
             listContainer.innerHTML = '';
@@ -960,18 +1096,19 @@
         function confirmAndSave() {
             pendingPlan.forEach(p => {
                 mealData[p.date] = {
-                    breakfast: p.breakfast,
-                    lunch: p.lunch,
-                    dinner: p.dinner
+                    breakfast: p.breakfast, bCal: p.bCal,
+                    lunch: p.lunch, lCal: p.lCal,
+                    dinner: p.dinner, dCal: p.dCal
                 };
             });
 
             localStorage.setItem('mealDataStore', JSON.stringify(mealData));
-            
+
             closeModal();
             renderTodayMeals();
             renderCalendar();
-            alert("식단이 성공적으로 등록되었습니다!");
+            calculateStats();
+            alert("식단 및 칼로리가 정상적으로 업데이트 되었습니다!");
         }
     </script>
 </body>
