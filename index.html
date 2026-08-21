@@ -62,146 +62,73 @@
             margin-bottom: 20px;
         }
 
-        /* 1. 오늘의 식단 섹션 개선 (넘기기 버튼 + 탭 추가) */
+        /* 1. 오늘의 식단 섹션 (한 줄 3칸 박스 배치) */
         .today-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .today-title {
             font-size: 1.15rem;
             font-weight: bold;
             color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
-        .meal-nav-tabs {
-            display: flex;
-            background: #F1F5F9;
-            border-radius: 10px;
-            padding: 3px;
-            margin-bottom: 12px;
-            gap: 2px;
-        }
-
-        .meal-tab-btn {
-            flex: 1;
-            padding: 8px 0;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-size: 0.88rem;
-            font-weight: bold;
-            color: #64748B;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .meal-tab-btn.active {
-            background: white;
-            color: var(--primary-dark);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
-
-        .today-slider-container {
-            position: relative;
-            display: flex;
-            align-items: center;
+        .today-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 8px;
         }
 
-        .nav-arrow-btn {
-            background: white;
-            border: 1px solid var(--border);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-            flex-shrink: 0;
-            user-select: none;
-        }
-
-        .nav-arrow-btn:active {
-            transform: scale(0.95);
-            background: #F8FAFC;
-        }
-
-        .meal-display-box {
-            flex: 1;
+        .meal-box {
             background: var(--primary-light);
             border-radius: 12px;
-            padding: 16px;
+            padding: 12px 8px;
+            border-top: 4px solid var(--primary);
             min-height: 110px;
-            border-left: 5px solid var(--primary);
-            transition: all 0.25s ease-in-out;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            transition: all 0.2s;
         }
 
-        .meal-display-box.is-cheat {
+        .meal-box.is-cheat {
             background: var(--cheat-bg);
-            border-left-color: var(--cheat-color);
+            border-top-color: var(--cheat-color);
         }
 
-        .meal-type-badge {
-            font-size: 0.85rem;
+        .meal-box-header {
+            font-size: 0.82rem;
             font-weight: bold;
             color: #1B5E20;
             margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 2px;
         }
 
-        .meal-display-box.is-cheat .meal-type-badge {
+        .meal-box.is-cheat .meal-box-header {
             color: var(--cheat-color);
         }
 
         .cheat-tag {
             background: var(--cheat-color);
             color: white;
-            font-size: 0.72rem;
-            padding: 2px 8px;
-            border-radius: 12px;
+            font-size: 0.65rem;
+            padding: 1px 5px;
+            border-radius: 8px;
             font-weight: bold;
         }
 
-        .meal-text-content {
-            font-size: 1.05rem;
+        .meal-box-content {
+            font-size: 0.85rem;
             font-weight: 600;
-            line-height: 1.45;
+            line-height: 1.35;
             color: #1E293B;
-        }
-
-        .meal-indicators {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 12px;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #CBD5E1;
-            cursor: pointer;
-        }
-
-        .dot.active {
-            background: var(--primary);
-            width: 20px;
-            border-radius: 4px;
+            word-break: keep-all;
         }
 
         /* 2. 캘린더 섹션 */
@@ -485,40 +412,40 @@
         <h1>🥗 스마트 식단 플래너</h1>
     </header>
 
-    <!-- 상단: 오늘의 식단 (이전/다음 넘기기 버튼 & 탭 완비) -->
+    <!-- 상단: 오늘의 식단 (한 줄 3개 나란히 배치) -->
     <section class="card">
         <div class="today-header">
             <span class="today-title">📌 오늘의 식단</span>
             <span id="todayDateStr" style="font-size:0.85rem; font-weight: bold; color:#64748B;"></span>
         </div>
 
-        <!-- 아침/점심/저녁 빠른 선택 탭 -->
-        <div class="meal-nav-tabs">
-            <button class="meal-tab-btn active" onclick="setTodayMealIndex(0)">🌅 아침</button>
-            <button class="meal-tab-btn" onclick="setTodayMealIndex(1)">☀️ 점심</button>
-            <button class="meal-tab-btn" onclick="setTodayMealIndex(2)">🌙 저녁</button>
-        </div>
-
-        <!-- 슬라이드/넘기기 영역 -->
-        <div class="today-slider-container">
-            <button class="nav-arrow-btn" onclick="prevMeal()">◀</button>
-            
-            <div id="todayMealDisplay" class="meal-display-box">
-                <div class="meal-type-badge">
-                    <span id="todayMealTypeLabel">🌅 아침</span>
-                    <span id="cheatBadge" class="cheat-tag" style="display:none;">🍕 치팅 데이!</span>
+        <div class="today-grid">
+            <!-- 아침 -->
+            <div id="breakfastBox" class="meal-box">
+                <div class="meal-box-header">
+                    <span>🌅 아침</span>
+                    <span id="breakfastCheatTag" class="cheat-tag" style="display:none;">치팅</span>
                 </div>
-                <div id="todayMealContent" class="meal-text-content">등록된 식단이 없습니다.</div>
+                <div id="todayBreakfastContent" class="meal-box-content">등록 없음</div>
             </div>
 
-            <button class="nav-arrow-btn" onclick="nextMeal()">▶</button>
-        </div>
+            <!-- 점심 -->
+            <div id="lunchBox" class="meal-box">
+                <div class="meal-box-header">
+                    <span>☀️ 점심</span>
+                    <span id="lunchCheatTag" class="cheat-tag" style="display:none;">치팅</span>
+                </div>
+                <div id="todayLunchContent" class="meal-box-content">등록 없음</div>
+            </div>
 
-        <!-- 하단 인디케이터 도트 -->
-        <div class="meal-indicators">
-            <div class="dot active" onclick="setTodayMealIndex(0)"></div>
-            <div class="dot" onclick="setTodayMealIndex(1)"></div>
-            <div class="dot" onclick="setTodayMealIndex(2)"></div>
+            <!-- 저녁 -->
+            <div id="dinnerBox" class="meal-box">
+                <div class="meal-box-header">
+                    <span>🌙 저녁</span>
+                    <span id="dinnerCheatTag" class="cheat-tag" style="display:none;">치팅</span>
+                </div>
+                <div id="todayDinnerContent" class="meal-box-content">등록 없음</div>
+            </div>
         </div>
     </section>
 
@@ -657,7 +584,6 @@
         let currentCalendarMode = 'week'; 
         let calendarBaseDate = new Date();
         let selectedFocus = 'protein';
-        let currentMealIndex = 0; // 0: 아침, 1: 점심, 2: 저녁
         let pendingPlan = [];
 
         // 로컬스토리지 저장 데이터 불러오기
@@ -666,7 +592,7 @@
         // 추천 메뉴 샘플 데이터
         const dbCarbs = ["현미밥 1공기", "잡곡밥", "찐 고구마 1개", "통밀 식빵 2장", "바나나 1개", "오트밀 죽"];
         const dbProteins = ["닭가슴살 구이", "삶은 계란 2개", "소고기 우둔살", "연어 구이", "두부 구이", "돼지 안심 살코기"];
-        const dbFibers = ["신선한 야채 샐러드", "브로콜리 데침", "방울토마토 10개", "사과 반 개", "나물 무침", "양배추 쌈"];
+        const dbFibers = ["야채 샐러드", "브로콜리 데침", "방울토마토 10개", "사과 반 개", "나물 무침", "양배추 쌈"];
 
         // 초기화
         window.onload = function() {
@@ -679,7 +605,7 @@
             defaultEnd.setDate(defaultEnd.getDate() + 6);
             document.getElementById('calEndDate').value = getFormattedDate(defaultEnd);
 
-            renderTodayCard();
+            renderTodayMeals();
             renderCalendar();
         };
 
@@ -690,68 +616,36 @@
             return `${y}-${m}-${d}`;
         }
 
-        // --- 오늘의 식단 제어 (넘기기 / 탭) ---
-        function setTodayMealIndex(index) {
-            currentMealIndex = index;
-            renderTodayCard();
-        }
-
-        function prevMeal() {
-            currentMealIndex = (currentMealIndex - 1 + 3) % 3;
-            renderTodayCard();
-        }
-
-        function nextMeal() {
-            currentMealIndex = (currentMealIndex + 1) % 3;
-            renderTodayCard();
-        }
-
-        function renderTodayCard() {
+        // --- 오늘의 식단 렌더링 (아침, 점심, 저녁 한 줄 동시 표시) ---
+        function renderTodayMeals() {
             const todayKey = getFormattedDate(new Date());
             document.getElementById('todayDateStr').innerText = todayKey;
 
-            const mealTypes = [
-                { key: 'breakfast', label: '🌅 아침' },
-                { key: 'lunch', label: '☀️ 점심' },
-                { key: 'dinner', label: '🌙 저녁' }
-            ];
+            const updateSlot = (boxId, contentId, tagId, text) => {
+                const box = document.getElementById(boxId);
+                const content = document.getElementById(contentId);
+                const tag = document.getElementById(tagId);
 
-            const currentType = mealTypes[currentMealIndex];
-
-            // 탭 버튼 활성화 스타일
-            document.querySelectorAll('.meal-tab-btn').forEach((btn, idx) => {
-                btn.classList.toggle('active', idx === currentMealIndex);
-            });
-
-            // 도트 인디케이터 활성화 스타일
-            document.querySelectorAll('.meal-indicators .dot').forEach((dot, idx) => {
-                dot.classList.toggle('active', idx === currentMealIndex);
-            });
-
-            document.getElementById('todayMealTypeLabel').innerText = currentType.label;
-
-            const displayBox = document.getElementById('todayMealDisplay');
-            const contentBox = document.getElementById('todayMealContent');
-            const cheatBadge = document.getElementById('cheatBadge');
-
-            if (mealData[todayKey] && mealData[todayKey][currentType.key]) {
-                const mealText = mealData[todayKey][currentType.key];
-                contentBox.innerText = mealText;
-
-                // 치팅 여부 판단
-                const isCheatMeal = mealText.includes('[치팅]') || (mealData[todayKey].isCheatDay && mealText !== '건강 클린식');
-                if (isCheatMeal) {
-                    displayBox.classList.add('is-cheat');
-                    cheatBadge.style.display = 'inline-block';
+                if (text) {
+                    content.innerText = text;
+                    if (text.includes('[치팅]')) {
+                        box.classList.add('is-cheat');
+                        tag.style.display = 'inline-block';
+                    } else {
+                        box.classList.remove('is-cheat');
+                        tag.style.display = 'none';
+                    }
                 } else {
-                    displayBox.classList.remove('is-cheat');
-                    cheatBadge.style.display = 'none';
+                    content.innerText = "등록 없음";
+                    box.classList.remove('is-cheat');
+                    tag.style.display = 'none';
                 }
-            } else {
-                contentBox.innerText = "등록된 식단이 없습니다. 아래에서 작성해보세요!";
-                displayBox.classList.remove('is-cheat');
-                cheatBadge.style.display = 'none';
-            }
+            };
+
+            const todayData = mealData[todayKey] || {};
+            updateSlot('breakfastBox', 'todayBreakfastContent', 'breakfastCheatTag', todayData.breakfast);
+            updateSlot('lunchBox', 'todayLunchContent', 'lunchCheatTag', todayData.lunch);
+            updateSlot('dinnerBox', 'todayDinnerContent', 'dinnerCheatTag', todayData.dinner);
         }
 
         // --- 캘린더 렌더링 ---
@@ -771,7 +665,7 @@
         function renderWeekView(container) {
             const startOfWeek = new Date(calendarBaseDate);
             const dayOfWeek = startOfWeek.getDay();
-            startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek); // 일요일 기준
+            startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek);
 
             const endOfWeek = new Date(startOfWeek);
             endOfWeek.setDate(endOfWeek.getDate() + 6);
@@ -983,7 +877,6 @@
                 mealData[dateKey].breakfast = cheatFormat;
                 mealData[dateKey].lunch = cheatFormat;
                 mealData[dateKey].dinner = cheatFormat;
-                mealData[dateKey].isCheatDay = true;
             } else {
                 mealData[dateKey][mealType] = cheatFormat;
             }
@@ -991,7 +884,7 @@
             localStorage.setItem('mealDataStore', JSON.stringify(mealData));
 
             alert(`🎉 ${dateKey} 식단에 [${menu}] 치팅 메뉴가 추가되었습니다!`);
-            renderTodayCard();
+            renderTodayMeals();
             renderCalendar();
             document.getElementById('cheatMenuInput').value = '';
         }
@@ -1032,20 +925,10 @@
             localStorage.setItem('mealDataStore', JSON.stringify(mealData));
             
             closeModal();
-            renderTodayCard();
+            renderTodayMeals();
             renderCalendar();
             alert("식단이 성공적으로 등록되었습니다!");
         }
     </script>
 </body>
 </html>
-```eof
-
-요청하신 수정 사항 및 신규 기능이 모두 구현된 완벽한 `index.html` 파일 생성이 완료되었습니다!
-
-### 💡 주요 개선 및 추가 사항
-1. **오늘의 식단 개선**:
-   - 상단 식단 카드에 **[🌅 아침] [☀️ 점심] [🌙 저녁] 빠른 이동 탭**과 **◀ / ▶ 넘기기 화살표 버튼**을 추가하여 간편하게 식사를 전환할 수 있습니다.
-2. **🎉 치팅 데이 기능 추가**:
-   - 먹고 싶은 메뉴(치킨, 피자, 떡볶이 등 빠른 선택 칩 지원)와 치팅 날짜, 식사 타임(아침, 점심, 저녁, 하루 전체)을 선택해 등록할 수 있습니다.
-   - 치팅 메뉴가 등록된 날에는 **분홍색/장미색 뱃지(`[치팅]`)**가 오늘의 식단과 달력 칸에 예쁘게 강조 표시됩니다.
