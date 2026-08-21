@@ -55,13 +55,13 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
             border-radius: var(--radius);
             padding: 16px;
             box-shadow: 0 4px 20px rgba(233, 30, 99, 0.08);
             margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         /* 1. 오늘의 식단 */
@@ -151,7 +151,7 @@
             color: var(--primary-dark);
         }
 
-        /* 통계 요약 */
+        /* 2. 통계 요약 */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -178,7 +178,7 @@
             color: var(--primary-dark);
         }
 
-        /* 캘린더 */
+        /* 3. 캘린더 */
         .calendar-controls {
             display: flex;
             justify-content: space-between;
@@ -272,7 +272,7 @@
             white-space: nowrap;
         }
 
-        /* 탭 구조 */
+        /* 4. 탭 구조 */
         .tab-group {
             display: flex;
             gap: 4px;
@@ -303,78 +303,66 @@
         .form-section { display: none; }
         .form-section.active { display: block; }
 
-        /* 탄단지 입력 카드 */
-        .macro-input-card {
-            background: #FFFFFF;
-            border: 1px solid #FFCDD2;
-            border-radius: 10px;
-            padding: 8px 10px;
-            margin-bottom: 8px;
-            display: grid;
-            grid-template-columns: 80px 85px 1fr;
-            align-items: center;
-            gap: 8px;
+        /* 💡 탄단지 1:1 균형 레이아웃 박스 */
+        .macro-box-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            margin-bottom: 12px; 
         }
 
-        .macro-label-wrap {
-            display: flex;
-            align-items: center;
+        .macro-card { 
+            background: #FFF0F5; 
+            border: 1px solid #FFCDD2; 
+            border-radius: 12px; 
+            padding: 12px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            min-height: 165px;
         }
 
-        .macro-label-wrap label {
-            font-size: 0.82rem;
-            font-weight: bold;
-            color: #444;
-            white-space: nowrap;
+        .macro-card-title { 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            color: var(--primary-dark); 
+            text-align: center; 
+            padding-bottom: 6px; 
+            border-bottom: 1px dashed #F48FB1; 
+            margin-bottom: 8px; 
         }
 
-        .macro-input-wrap {
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .macro-row { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            font-size: 0.78rem; 
+            font-weight: bold; 
+            color: #444; 
+            margin-bottom: 6px; 
         }
 
-        .macro-input-wrap input {
-            width: 58px;
-            height: 32px;
-            padding: 0 6px;
-            border: 1px solid #F48FB1;
-            border-radius: 6px;
-            font-size: 0.82rem;
-            text-align: right;
+        .macro-row input { 
+            width: 52px; 
+            text-align: center; 
+            padding: 4px; 
+            border: 1px solid #F48FB1; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 0.8rem; 
             outline: none;
-            font-weight: bold;
-            box-sizing: border-box;
         }
 
-        .macro-input-wrap input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 4px rgba(233,30,99,0.2);
-        }
-
-        .unit-text {
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: #666;
-        }
-
-        .hint-badge {
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            color: var(--primary-dark);
-            font-weight: bold;
-            background: #FFF0F5;
-            padding: 0 8px;
-            border-radius: 6px;
-            border: 1px solid #FFCDD2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            box-sizing: border-box;
-            width: 100%;
+        .gram-value { 
+            background: #FFFFFF; 
+            padding: 4px 6px; 
+            border-radius: 6px; 
+            border: 1px solid #FFCDD2; 
+            color: var(--primary-dark); 
+            font-weight: bold; 
+            font-size: 0.78rem; 
+            min-width: 55px; 
+            text-align: center; 
         }
 
         .input-grid {
@@ -459,7 +447,7 @@
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: bold;
             cursor: pointer;
             margin-top: 6px;
@@ -605,58 +593,50 @@
         <h2 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--primary-dark);">⚙️ 식단 설정 및 치팅 데이</h2>
         
         <div class="tab-group">
-            <button class="tab-btn active" onclick="switchTab('macros', event)">탄단지 기준</button>
+            <button class="tab-btn active" onclick="switchTab('macros', event)">탄단지 입력</button>
             <button class="tab-btn" onclick="switchTab('calories', event)">칼로리 기준</button>
             <button class="tab-btn" onclick="switchTab('cheat', event)">🎉 치팅 데이!</button>
         </div>
 
-        <!-- 탭 1: 탄단지 & 식이섬유 입력 -->
+        <!-- 탭 1: 탄단지 입력 (1:1 비율 박스 개선 적용) -->
         <div id="macrosForm" class="form-section active">
-            <div class="macro-input-card">
-                <div class="macro-label-wrap">
-                    <label for="inputCarb">🌾 탄수화물</label>
+            <div class="macro-box-grid">
+                <!-- 좌측 박스: 목표 입력 (g) -->
+                <div class="macro-card">
+                    <div class="macro-card-title">⚙️ 영양소 입력 (g)</div>
+                    <div class="macro-row">
+                        <span>🌾 탄수화물</span>
+                        <input type="number" id="inputCarb" value="200" oninput="updateMacroEquivalents()">
+                    </div>
+                    <div class="macro-row">
+                        <span>🍗 단백질</span>
+                        <input type="number" id="inputProtein" value="100" oninput="updateMacroEquivalents()">
+                    </div>
+                    <div class="macro-row">
+                        <span>🥑 지방</span>
+                        <input type="number" id="inputFat" value="50" oninput="updateMacroEquivalents()">
+                    </div>
                 </div>
-                <div class="macro-input-wrap">
-                    <input type="number" id="inputCarb" value="200" oninput="updateMacroEquivalents()">
-                    <span class="unit-text">g</span>
+
+                <!-- 우측 박스: 음식 환산 수량 (g 기준) -->
+                <div class="macro-card">
+                    <div class="macro-card-title">⚖️ 음식 예상 환산</div>
+                    <div class="macro-row">
+                        <span>🌾 쌀밥</span>
+                        <span class="gram-value" id="carbEquiv">약 2.9공기</span>
+                    </div>
+                    <div class="macro-row">
+                        <span>🍗 닭가슴살</span>
+                        <span class="gram-value" id="proteinEquiv">약 4.0개</span>
+                    </div>
+                    <div class="macro-row">
+                        <span>🥑 아몬드</span>
+                        <span class="gram-value" id="fatEquiv">약 100알</span>
+                    </div>
                 </div>
-                <div id="carbEquiv" class="hint-badge">🍚 쌀밥 약 2.9공기</div>
             </div>
 
-            <div class="macro-input-card">
-                <div class="macro-label-wrap">
-                    <label for="inputProtein">🍗 단백질</label>
-                </div>
-                <div class="macro-input-wrap">
-                    <input type="number" id="inputProtein" value="100" oninput="updateMacroEquivalents()">
-                    <span class="unit-text">g</span>
-                </div>
-                <div id="proteinEquiv" class="hint-badge">🍗 닭가슴살 약 4개</div>
-            </div>
-
-            <div class="macro-input-card">
-                <div class="macro-label-wrap">
-                    <label for="inputFat">🥑 지방</label>
-                </div>
-                <div class="macro-input-wrap">
-                    <input type="number" id="inputFat" value="50" oninput="updateMacroEquivalents()">
-                    <span class="unit-text">g</span>
-                </div>
-                <div id="fatEquiv" class="hint-badge">🥜 아몬드 약 100알</div>
-            </div>
-
-            <div class="macro-input-card">
-                <div class="macro-label-wrap">
-                    <label for="inputFiber">🥦 식이섬유</label>
-                </div>
-                <div class="macro-input-wrap">
-                    <input type="number" id="inputFiber" value="25" oninput="updateMacroEquivalents()">
-                    <span class="unit-text">g</span>
-                </div>
-                <div id="fiberEquiv" class="hint-badge">🥬 양배추 약 1개</div>
-            </div>
-
-            <div class="input-grid" style="margin-top: 10px;">
+            <div class="input-grid">
                 <div>
                     <label style="font-size:0.75rem; font-weight:bold; color:#666;">시작일</label>
                     <input type="date" id="macroStartDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; font-size:0.8rem; margin-top:2px;">
@@ -783,7 +763,6 @@
             { name: "햄버거", cal: 800, desc: "버거 세트" }
         ];
 
-        // 기본 추천 메뉴 데이터베이스
         const mealPresets = {
             protein: [
                 { b: "계란프라이 2개 + 오트밀", bCal: 350, l: "닭가슴살 볶음밥", lCal: 550, d: "소고기 두부 구이", dCal: 500 },
@@ -864,7 +843,6 @@
 
             try {
                 const apiUrl = `https://apis.data.go.kr/1471000/FoodNtrIrdntInfoService1/getFoodNtrItmCdList1?serviceKey=sample&desc_kor=${encodeURIComponent(searchKeyword)}&type=json`;
-                
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 2500);
 
@@ -883,7 +861,6 @@
                     }
                 }
                 throw new Error("DB 검색 결과 없음");
-
             } catch (err) {
                 runSafetyFallback(searchKeyword, statusBadge);
             }
@@ -912,22 +889,16 @@
             const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
             const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
             const fat = parseFloat(document.getElementById('inputFat').value) || 0;
-            const fiber = parseFloat(document.getElementById('inputFiber').value) || 0;
 
             const riceBowls = (carb / 70).toFixed(1);
             const chickenBreasts = (protein / 25).toFixed(1);
             const almonds = Math.round(fat * 2);
-            const cabbage = (fiber / 25).toFixed(1);
 
-            document.getElementById('carbEquiv').innerText = `🍚 쌀밥 약 ${riceBowls}공기`;
-            document.getElementById('proteinEquiv').innerText = `🍗 닭가슴살 약 ${chickenBreasts}개`;
-            document.getElementById('fatEquiv').innerText = `🥜 아몬드 약 ${almonds}알`;
-            document.getElementById('fiberEquiv').innerText = `🥬 양배추 약 ${cabbage}개`;
+            document.getElementById('carbEquiv').innerText = `약 ${riceBowls}공기`;
+            document.getElementById('proteinEquiv').innerText = `약 ${chickenBreasts}개`;
+            document.getElementById('fatEquiv').innerText = `약 ${almonds}알`;
         }
 
-        /* --- 복원된 핵심 자바스크립트 구현 --- */
-
-        // 1. 오늘의 식단 렌더링
         function renderTodayMeals() {
             const todayStr = getFormattedDate(new Date());
             const data = mealData[todayStr];
@@ -964,7 +935,6 @@
             const total = (data.bCal || 0) + (data.lCal || 0) + (data.dCal || 0);
             document.getElementById('todayTotalCalDisplay').innerText = total + " kcal";
 
-            // 치팅 태그 및 카드 색상 조정
             document.getElementById('breakfastCheatTag').style.display = data.bCheat ? "inline" : "none";
             document.getElementById('lunchCheatTag').style.display = data.lCheat ? "inline" : "none";
             document.getElementById('dinnerCheatTag').style.display = data.dCheat ? "inline" : "none";
@@ -974,7 +944,6 @@
             data.dCheat ? dBox.classList.add('is-cheat') : dBox.classList.remove('is-cheat');
         }
 
-        // 2. 캘린더 렌더링
         function renderCalendar() {
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
@@ -1062,11 +1031,9 @@
             parentEl.appendChild(card);
         }
 
-        // 3. 통계 계산
         function calculateStats() {
             const today = new Date();
             
-            // 이번 주 통계
             const startOfWeek = new Date(today);
             startOfWeek.setDate(today.getDate() - today.getDay());
             let weekTotal = 0, weekCount = 0;
@@ -1088,7 +1055,6 @@
             document.getElementById('weekTotalCal').innerText = `${weekTotal} kcal`;
             document.getElementById('weekAvgCal').innerText = `${weekCount ? Math.round(weekTotal / weekCount) : 0} kcal`;
 
-            // 이번 달 통계
             const year = today.getFullYear();
             const month = today.getMonth();
             const lastDay = new Date(year, month + 1, 0).getDate();
@@ -1110,7 +1076,6 @@
             document.getElementById('monthAvgCal').innerText = `${monthCount ? Math.round(monthTotal / monthCount) : 0} kcal`;
         }
 
-        // 4. 네비게이션 및 뷰 조절
         function navigateCalendar(dir) {
             if (currentCalendarMode === 'week') {
                 calendarBaseDate.setDate(calendarBaseDate.getDate() + (dir * 7));
@@ -1131,13 +1096,7 @@
             renderCalendar();
         }
 
-        // 5. 식단 자동 생성 로직
         function generateByMacros() {
-            const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
-            const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
-            const fat = parseFloat(document.getElementById('inputFat').value) || 0;
-            const targetCal = Math.round((carb * 4) + (protein * 4) + (fat * 9));
-
             const startStr = document.getElementById('macroStartDate').value;
             const days = parseInt(document.getElementById('macroDays').value) || 7;
 
@@ -1148,8 +1107,7 @@
 
             pendingPlan = [];
             let startDate = new Date(startStr);
-
-            const presets = mealPresets.protein; // 기본 단백질 기반 템플릿 사용
+            const presets = mealPresets.protein;
 
             for (let i = 0; i < days; i++) {
                 const currDate = new Date(startDate);
@@ -1194,7 +1152,6 @@
                 const dateStr = getFormattedDate(d);
                 const preset = presets[count % presets.length];
                 
-                // 지정 칼로리에 맞춰 비율 조정
                 const baseSum = preset.bCal + preset.lCal + preset.dCal;
                 const ratio = targetCal / baseSum;
 
@@ -1210,7 +1167,6 @@
             openModal();
         }
 
-        // 6. 치팅데이 추가
         function addCheatMeal() {
             const menu = document.getElementById('cheatMenuInput').value.trim();
             const cal = parseInt(document.getElementById('cheatCalInput').value) || 500;
@@ -1252,7 +1208,6 @@
             calculateStats();
         }
 
-        // 7. 모달 제어
         function openModal() {
             const listEl = document.getElementById('previewList');
             listEl.innerHTML = '';
@@ -1292,7 +1247,7 @@
             renderTodayMeals();
             renderCalendar();
             calculateStats();
-            alert("식단 생성이 성공적으로 등록되었습니다!");
+            alert("식단이 성공적으로 달력에 저장되었습니다!");
         }
     </script>
 </body>
