@@ -12,18 +12,17 @@
 
     <style>
         :root {
-            --primary: #4CAF50;
-            --primary-dark: #2E7D32;
-            --primary-light: #E8F5E9;
-            --secondary: #2196F3;
+            --primary: #E91E63;
+            --primary-dark: #C2185B;
+            --primary-light: #FCE4EC;
+            --secondary: #AB47BC;
             --accent: #FF9800;
-            --cheat-color: #E91E63;
-            --cheat-bg: #FCE4EC;
-            --bg: #F4F6F8;
+            --cheat-color: #D81B60;
+            --cheat-bg: #F8BBD0;
             --card-bg: #FFFFFF;
             --text: #333333;
-            --text-muted: #777777;
-            --border: #E2E8F0;
+            --text-muted: #666666;
+            --border: #F48FB1;
             --radius: 16px;
         }
 
@@ -34,8 +33,10 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
+        /* 3. 배경색 연한 핑크색 그라데이션 변경 */
         body {
-            background-color: var(--bg);
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFE4E8 50%, #FCE4EC 100%);
+            background-attachment: fixed;
             color: var(--text);
             padding: 16px;
             max-width: 768px;
@@ -45,21 +46,23 @@
 
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--primary-dark);
             margin-bottom: 4px;
         }
 
         .card {
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
             border-radius: var(--radius);
-            padding: 18px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-            margin-bottom: 18px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(233, 30, 99, 0.08);
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
         /* 1. 오늘의 식단 섹션 */
@@ -67,11 +70,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .today-title {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: bold;
             color: var(--primary-dark);
         }
@@ -79,20 +82,19 @@
         .today-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
 
         .meal-box {
-            background: var(--primary-light);
+            background: #FFF0F5;
             border-radius: 12px;
-            padding: 10px 8px;
-            border-top: 4px solid var(--primary);
-            min-height: 110px;
+            padding: 8px 6px;
+            border-top: 3px solid var(--primary);
+            min-height: 100px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.2s;
         }
 
         .meal-box.is-cheat {
@@ -101,142 +103,138 @@
         }
 
         .meal-box-header {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: bold;
-            color: #1B5E20;
+            color: var(--primary-dark);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 2px;
             margin-bottom: 4px;
-        }
-
-        .meal-box.is-cheat .meal-box-header {
-            color: var(--cheat-color);
         }
 
         .cheat-tag {
             background: var(--cheat-color);
             color: white;
-            font-size: 0.65rem;
-            padding: 1px 5px;
-            border-radius: 8px;
-            font-weight: bold;
+            font-size: 0.6rem;
+            padding: 1px 4px;
+            border-radius: 6px;
         }
 
         .meal-box-content {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            line-height: 1.35;
-            color: #1E293B;
+            line-height: 1.3;
+            color: #333;
             word-break: keep-all;
             flex-grow: 1;
         }
 
         .meal-cal-badge {
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             font-weight: bold;
-            color: #2E7D32;
-            margin-top: 6px;
-            background: rgba(255,255,255,0.7);
+            color: var(--primary-dark);
+            margin-top: 4px;
+            background: rgba(255,255,255,0.8);
             padding: 2px 4px;
             border-radius: 4px;
             text-align: right;
         }
 
         .today-total-bar {
-            background: #F1F5F9;
-            padding: 10px 14px;
-            border-radius: 10px;
+            background: #FFE6EC;
+            padding: 8px 12px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             font-weight: bold;
+            color: var(--primary-dark);
         }
 
         /* 2. 통계 요약 카드 */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
         .stat-box {
-            background: #F8FAFC;
-            border: 1px solid var(--border);
-            padding: 10px 12px;
-            border-radius: 10px;
+            background: #FFF5F7;
+            border: 1px solid #FFCDD2;
+            padding: 8px 10px;
+            border-radius: 8px;
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             font-weight: 600;
             display: block;
-            margin-bottom: 2px;
         }
 
         .stat-value {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             color: var(--primary-dark);
         }
 
-        /* 3. 캘린더 섹션 */
+        /* 1. 달력 칸 넘침 완전 해결 (minmax(0, 1fr) 적용 및 overflow 설정) */
         .calendar-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
         }
 
         .btn {
             background: #ffffff;
             border: 1px solid var(--border);
-            padding: 8px 14px;
+            padding: 6px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
+            color: var(--primary-dark);
         }
 
         .btn-toggle {
             background: var(--primary-light);
-            color: var(--primary-dark);
-            border: 1px solid var(--primary);
+            border-color: var(--primary);
         }
 
         .calendar-grid-week, .calendar-grid-month {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 4px;
+            width: 100%;
         }
 
         .day-card {
-            background: #FAFAFA;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 6px 4px;
-            min-height: 115px;
+            background: #FFFFFF;
+            border: 1px solid #F8BBD0;
+            border-radius: 8px;
+            padding: 4px 2px;
+            min-height: 95px;
             display: flex;
             flex-direction: column;
-            cursor: pointer;
-            transition: border 0.2s;
+            overflow: hidden;
+            box-sizing: border-box;
+            width: 100%;
         }
 
         .day-card.today {
             border: 2px solid var(--primary);
-            background: #FFFFFF;
+            background: #FFF0F5;
         }
 
         .day-number {
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             text-align: center;
-            margin-bottom: 4px;
-            color: #475569;
+            margin-bottom: 2px;
+            color: #555;
+            white-space: nowrap;
         }
 
         .day-card.today .day-number {
@@ -244,178 +242,193 @@
         }
 
         .day-meal {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             margin-top: 2px;
-            padding: 2px 3px;
-            background: #FFFFFF;
-            border-radius: 4px;
-            border: 1px solid #E2E8F0;
+            padding: 1px 2px;
+            background: #FFF5F7;
+            border-radius: 3px;
+            border: 1px solid #FFCDD2;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            width: 100%;
         }
 
         .day-meal.cheat-meal-slot {
             background: var(--cheat-bg);
-            border-color: #F8BBD0;
+            border-color: #F48FB1;
             color: var(--cheat-color);
             font-weight: bold;
         }
 
         .day-cal-total {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: bold;
             color: var(--primary-dark);
             text-align: center;
             margin-top: auto;
-            padding-top: 4px;
-            border-top: 1px dashed var(--border);
+            padding-top: 2px;
+            border-top: 1px dashed #FFCDD2;
+            white-space: nowrap;
         }
 
-        /* 4. 입력 폼 섹션 (그람수 바로 옆 환산 수치) */
+        /* 2. 그람수 입력 부분 깔끔한 카드리스트 형태로 전면 재디자인 */
         .tab-group {
             display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
-            background: #F1F5F9;
-            padding: 4px;
-            border-radius: 10px;
+            gap: 4px;
+            margin-bottom: 12px;
+            background: #FFE6EC;
+            padding: 3px;
+            border-radius: 8px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px 6px;
+            padding: 8px 4px;
             background: transparent;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 0.82rem;
-            color: #64748B;
+            font-size: 0.78rem;
+            color: #777;
         }
 
         .tab-btn.active {
             background: white;
             color: var(--primary-dark);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-
-        .tab-btn.cheat-tab.active {
-            color: var(--cheat-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .form-section { display: none; }
         .form-section.active { display: block; }
 
-        .input-group {
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .input-group label {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--text-muted);
-        }
-
-        /* 입력창과 환산 텍스트 한 줄 정렬 */
-        .input-inline-wrap {
+        .macro-input-card {
+            background: #FFFFFF;
+            border: 1px solid #FFCDD2;
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 8px;
         }
 
-        .input-inline-wrap input {
-            width: 100px;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.9rem;
+        .macro-label-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 90px;
+        }
+
+        .macro-label-wrap label {
+            font-size: 0.82rem;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .macro-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .macro-input-wrap input {
+            width: 68px;
+            padding: 6px 8px;
+            border: 1px solid #F48FB1;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            text-align: right;
             outline: none;
+            font-weight: bold;
         }
 
-        .input-inline-wrap input:focus {
+        .macro-input-wrap input:focus {
             border-color: var(--primary);
+            box-shadow: 0 0 4px rgba(233,30,99,0.2);
         }
 
-        .hint-text-inline {
-            font-size: 0.8rem;
-            color: #2E7D32;
-            font-weight: 600;
+        .unit-text {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .hint-badge {
+            font-size: 0.72rem;
+            color: var(--primary-dark);
+            font-weight: bold;
+            background: #FFF0F5;
+            padding: 4px 8px;
+            border-radius: 6px;
             white-space: nowrap;
+            border: 1px solid #FFCDD2;
         }
 
         .input-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 8px;
         }
 
         .focus-options {
             display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
 
         .focus-btn {
             flex: 1;
-            padding: 10px 4px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            padding: 8px 2px;
+            border: 1px solid #FFCDD2;
+            border-radius: 6px;
             background: white;
             cursor: pointer;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 600;
         }
 
         .focus-btn.selected {
-            border-color: var(--secondary);
-            background: #E3F2FD;
-            color: var(--secondary);
+            border-color: var(--primary);
+            background: #FFF0F5;
+            color: var(--primary-dark);
             font-weight: bold;
         }
 
         .cheat-presets {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 12px;
+            gap: 4px;
+            margin-bottom: 10px;
         }
 
         .preset-chip {
-            background: #F1F5F9;
-            border: 1px solid var(--border);
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 0.8rem;
+            background: #FFF0F5;
+            border: 1px solid #FFCDD2;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
             cursor: pointer;
-        }
-
-        .preset-chip:hover {
-            background: var(--cheat-bg);
-            border-color: var(--cheat-color);
-            color: var(--cheat-color);
         }
 
         .action-btn {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 8px;
-            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.25);
+            margin-top: 6px;
+            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.2);
         }
 
         .action-btn.cheat-btn {
             background: var(--cheat-color);
-            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.25);
         }
 
         /* 모달 팝업 */
@@ -423,7 +436,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4);
             align-items: center;
             justify-content: center;
             padding: 16px;
@@ -433,51 +446,51 @@
         .modal-content {
             background: white;
             border-radius: var(--radius);
-            padding: 20px;
-            max-width: 500px;
+            padding: 16px;
+            max-width: 480px;
             width: 100%;
             max-height: 80vh;
             overflow-y: auto;
         }
 
         .modal-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
         }
 
         .preview-item {
-            background: #F8FAFC;
-            padding: 12px;
+            background: #FFF5F7;
+            padding: 10px;
             border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            line-height: 1.45;
-            border-left: 4px solid var(--primary);
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            border-left: 3px solid var(--primary);
         }
 
         .modal-actions {
             display: flex;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 6px;
+            margin-top: 12px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🥗 스마트 식단 플래너</h1>
+        <h1>🌸 스마트 식단 플래너</h1>
     </header>
 
     <!-- 1. 상단: 오늘의 식단 -->
     <section class="card">
         <div class="today-header">
             <span class="today-title">📌 오늘의 식단</span>
-            <span id="todayDateStr" style="font-size:0.85rem; font-weight: bold; color:#64748B;"></span>
+            <span id="todayDateStr" style="font-size:0.8rem; font-weight: bold; color:#777;"></span>
         </div>
 
         <div class="today-grid">
-            <!-- 아침 -->
             <div id="breakfastBox" class="meal-box">
                 <div class="meal-box-header">
                     <span>🌅 아침</span>
@@ -487,7 +500,6 @@
                 <div id="breakfastCal" class="meal-cal-badge">- kcal</div>
             </div>
 
-            <!-- 점심 -->
             <div id="lunchBox" class="meal-box">
                 <div class="meal-box-header">
                     <span>☀️ 점심</span>
@@ -497,7 +509,6 @@
                 <div id="lunchCal" class="meal-cal-badge">- kcal</div>
             </div>
 
-            <!-- 저녁 -->
             <div id="dinnerBox" class="meal-box">
                 <div class="meal-box-header">
                     <span>🌙 저녁</span>
@@ -510,13 +521,13 @@
 
         <div class="today-total-bar">
             <span>🔥 오늘 총 섭취 칼로리</span>
-            <span id="todayTotalCalDisplay" style="color:var(--primary-dark);">0 kcal</span>
+            <span id="todayTotalCalDisplay">0 kcal</span>
         </div>
     </section>
 
-    <!-- 2. 주간 및 월간 칼로리 통계 요약 카드 -->
+    <!-- 2. 주간 및 월간 칼로리 통계 -->
     <section class="card">
-        <h2 style="font-size: 1.05rem; margin-bottom: 12px; color: var(--primary-dark);">📊 칼로리 통계 요약</h2>
+        <h2 style="font-size: 0.95rem; margin-bottom: 8px; color: var(--primary-dark);">📊 칼로리 통계 요약</h2>
         <div class="stats-grid">
             <div class="stat-box">
                 <span class="stat-label">이번 주 총 칼로리</span>
@@ -537,12 +548,12 @@
         </div>
     </section>
 
-    <!-- 3. 중단: 캘린더 -->
+    <!-- 3. 중단: 캘린더 (넘침 완벽 수정) -->
     <section class="card">
         <div class="calendar-controls">
             <div>
                 <button class="btn" onclick="navigateCalendar(-1)">◀ 이전</button>
-                <span id="calendarTitle" style="font-weight:bold; margin: 0 8px; font-size: 0.95rem;"></span>
+                <span id="calendarTitle" style="font-weight:bold; margin: 0 4px; font-size: 0.85rem;"></span>
                 <button class="btn" onclick="navigateCalendar(1)">다음 ▶</button>
             </div>
             <button class="btn btn-toggle" id="viewToggleBtn" onclick="toggleCalendarView()">월간 보기</button>
@@ -550,75 +561,87 @@
         <div id="calendarGrid" class="calendar-grid-week"></div>
     </section>
 
-    <!-- 4. 하단: 식단 설정 폼 (입력창 바로 옆에 그림/실물 분량 표시) -->
+    <!-- 4. 하단: 식단 설정 폼 (그람수 입력 디자인 깔끔하게 정리) -->
     <section class="card">
-        <h2 style="font-size: 1.05rem; margin-bottom: 12px;">⚙️ 식단 설정 및 치팅 데이</h2>
+        <h2 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--primary-dark);">⚙️ 식단 설정 및 치팅 데이</h2>
         
         <div class="tab-group">
             <button class="tab-btn active" onclick="switchTab('macros')">탄단지 기준</button>
             <button class="tab-btn" onclick="switchTab('calories')">칼로리 기준</button>
-            <button class="tab-btn cheat-tab" onclick="switchTab('cheat')">🎉 치팅 데이!</button>
+            <button class="tab-btn" onclick="switchTab('cheat')">🎉 치팅 데이!</button>
         </div>
 
         <!-- 탭 1: 탄단지 & 식이섬유 입력 -->
         <div id="macrosForm" class="form-section active">
-            <!-- 탄수화물 -->
-            <div class="input-group">
-                <label for="inputCarb">탄수화물 (g)</label>
-                <div class="input-inline-wrap">
-                    <input type="number" id="inputCarb" placeholder="200" value="200" oninput="updateMacroEquivalents()">
-                    <span id="carbEquiv" class="hint-text-inline">(🍚 쌀밥 약 2.9공기 분량)</span>
+            <!-- 탄수화물 카드 -->
+            <div class="macro-input-card">
+                <div class="macro-label-wrap">
+                    <label for="inputCarb">🌾 탄수화물</label>
                 </div>
+                <div class="macro-input-wrap">
+                    <input type="number" id="inputCarb" value="200" oninput="updateMacroEquivalents()">
+                    <span class="unit-text">g</span>
+                </div>
+                <div id="carbEquiv" class="hint-badge">🍚 쌀밥 약 2.9공기</div>
             </div>
 
-            <!-- 단백질 -->
-            <div class="input-group">
-                <label for="inputProtein">단백질 (g)</label>
-                <div class="input-inline-wrap">
-                    <input type="number" id="inputProtein" placeholder="100" value="100" oninput="updateMacroEquivalents()">
-                    <span id="proteinEquiv" class="hint-text-inline">(🍗 닭가슴살 약 4개 분량)</span>
+            <!-- 단백질 카드 -->
+            <div class="macro-input-card">
+                <div class="macro-label-wrap">
+                    <label for="inputProtein">🍗 단백질</label>
                 </div>
+                <div class="macro-input-wrap">
+                    <input type="number" id="inputProtein" value="100" oninput="updateMacroEquivalents()">
+                    <span class="unit-text">g</span>
+                </div>
+                <div id="proteinEquiv" class="hint-badge">🍗 닭가슴살 약 4개</div>
             </div>
 
-            <!-- 지방 -->
-            <div class="input-group">
-                <label for="inputFat">지방 (g)</label>
-                <div class="input-inline-wrap">
-                    <input type="number" id="inputFat" placeholder="50" value="50" oninput="updateMacroEquivalents()">
-                    <span id="fatEquiv" class="hint-text-inline">(🥜 아몬드 약 100알 분량)</span>
+            <!-- 지방 카드 -->
+            <div class="macro-input-card">
+                <div class="macro-label-wrap">
+                    <label for="inputFat">🥑 지방</label>
                 </div>
+                <div class="macro-input-wrap">
+                    <input type="number" id="inputFat" value="50" oninput="updateMacroEquivalents()">
+                    <span class="unit-text">g</span>
+                </div>
+                <div id="fatEquiv" class="hint-badge">🥜 아몬드 약 100알</div>
             </div>
 
-            <!-- 식이섬유 -->
-            <div class="input-group">
-                <label for="inputFiber">식이섬유 (g)</label>
-                <div class="input-inline-wrap">
-                    <input type="number" id="inputFiber" placeholder="25" value="25" oninput="updateMacroEquivalents()">
-                    <span id="fiberEquiv" class="hint-text-inline">(🥬 양배추 약 1개 분량)</span>
+            <!-- 식이섬유 카드 -->
+            <div class="macro-input-card">
+                <div class="macro-label-wrap">
+                    <label for="inputFiber">🥦 식이섬유</label>
                 </div>
+                <div class="macro-input-wrap">
+                    <input type="number" id="inputFiber" value="25" oninput="updateMacroEquivalents()">
+                    <span class="unit-text">g</span>
+                </div>
+                <div id="fiberEquiv" class="hint-badge">🥬 양배추 약 1개</div>
             </div>
 
-            <div class="input-grid" style="margin-top: 14px;">
-                <div class="input-group">
-                    <label>시작일</label>
-                    <input type="date" id="macroStartDate" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
+            <div class="input-grid" style="margin-top: 10px;">
+                <div>
+                    <label style="font-size:0.75rem; font-weight:bold; color:#666;">시작일</label>
+                    <input type="date" id="macroStartDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; font-size:0.8rem; margin-top:2px;">
                 </div>
-                <div class="input-group">
-                    <label>적용 기간 (일)</label>
-                    <input type="number" id="macroDays" value="7" min="1" max="31" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
+                <div>
+                    <label style="font-size:0.75rem; font-weight:bold; color:#666;">기간 (일)</label>
+                    <input type="number" id="macroDays" value="7" min="1" max="31" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; font-size:0.8rem; margin-top:2px;">
                 </div>
             </div>
-            <button class="action-btn" onclick="generateByMacros()">맞춤 식단 생성 및 컨펌</button>
+            <button class="action-btn" onclick="generateByMacros()">맞춤 식단 생성 및 적용</button>
         </div>
 
         <!-- 탭 2: 칼로리 기준 -->
         <div id="caloriesForm" class="form-section">
-            <div class="input-group">
-                <label>목표 하루 칼로리 (kcal)</label>
-                <input type="number" id="inputCalorie" placeholder="예: 2000" value="2000" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
+            <div style="margin-bottom: 8px;">
+                <label style="font-size: 0.75rem; font-weight: bold; color: #666;">목표 하루 칼로리 (kcal)</label>
+                <input type="number" id="inputCalorie" value="2000" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
             </div>
-            <div style="margin-bottom: 12px;">
-                <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); display:block; margin-bottom: 6px;">영양 위주 선택</label>
+            <div style="margin-bottom: 8px;">
+                <label style="font-size: 0.75rem; font-weight: bold; color: #666; display:block; margin-bottom: 4px;">영양 강조 선택</label>
                 <div class="focus-options">
                     <button class="focus-btn selected" onclick="selectFocus(this, 'protein')">🍗 단백질 위주</button>
                     <button class="focus-btn" onclick="selectFocus(this, 'fiber')">🥗 식이섬유 위주</button>
@@ -626,23 +649,23 @@
                 </div>
             </div>
             <div class="input-grid">
-                <div class="input-group">
-                    <label>시작일</label>
-                    <input type="date" id="calStartDate" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: bold; color: #666;">시작일</label>
+                    <input type="date" id="calStartDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
                 </div>
-                <div class="input-group">
-                    <label>종료일</label>
-                    <input type="date" id="calEndDate" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: bold; color: #666;">종료일</label>
+                    <input type="date" id="calEndDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
                 </div>
             </div>
-            <button class="action-btn" onclick="generateByCalories()">칼로리 식단 추천 및 컨펌</button>
+            <button class="action-btn" onclick="generateByCalories()">칼로리 식단 추천 및 적용</button>
         </div>
 
-        <!-- 탭 3: 치팅 데이 설정 -->
+        <!-- 탭 3: 치팅 데이 -->
         <div id="cheatForm" class="form-section">
-            <div class="input-group">
-                <label>먹고 싶은 치팅 메뉴 🍕</label>
-                <input type="text" id="cheatMenuInput" placeholder="예: 양념치킨 & 맥주, 엽기떡볶이" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
+            <div style="margin-bottom: 8px;">
+                <label style="font-size: 0.75rem; font-weight: bold; color: #666;">치팅 메뉴 🍕</label>
+                <input type="text" id="cheatMenuInput" placeholder="예: 양념치킨 & 맥주" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
             </div>
 
             <div class="cheat-presets">
@@ -650,33 +673,32 @@
                 <span class="preset-chip" onclick="setCheatPreset('페퍼로니 피자 🍕')">🍕 피자</span>
                 <span class="preset-chip" onclick="setCheatPreset('매콤 떡볶이 🥘')">🥘 떡볶이</span>
                 <span class="preset-chip" onclick="setCheatPreset('삼겹살 & 비빔면 🥓')">🥓 삼겹살</span>
-                <span class="preset-chip" onclick="setCheatPreset('짜장면 & 탕수육 🥢')">🥢 중식</span>
             </div>
 
             <div class="input-grid">
-                <div class="input-group">
-                    <label>치팅 날짜</label>
-                    <input type="date" id="cheatDate" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: bold; color: #666;">날짜</label>
+                    <input type="date" id="cheatDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
                 </div>
-                <div class="input-group">
-                    <label>치팅 식사 타임</label>
-                    <select id="cheatMealType" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
-                        <option value="all">하루 전체 (자유식)</option>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: bold; color: #666;">식사 타임</label>
+                    <select id="cheatMealType" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
+                        <option value="all">하루 전체</option>
                         <option value="breakfast">아침</option>
                         <option value="lunch" selected>점심</option>
                         <option value="dinner">저녁</option>
                     </select>
                 </div>
             </div>
-            <button class="action-btn cheat-btn" onclick="addCheatMeal()">🎉 치팅 식단으로 등록하기</button>
+            <button class="action-btn cheat-btn" onclick="addCheatMeal()">🎉 치팅 데이 등록하기</button>
         </div>
     </section>
 
     <!-- 미리보기 모달 -->
     <div id="confirmModal" class="modal">
         <div class="modal-content">
-            <div class="modal-title">📋 식단 미리보기 및 컨펌</div>
-            <p style="font-size:0.85rem; color:#666; margin-bottom:12px;">아래 식단으로 적용할까요?</p>
+            <div class="modal-title">📋 식단 미리보기</div>
+            <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">아래 식단으로 달력에 적용합니다.</p>
             <div id="previewList"></div>
             <div class="modal-actions">
                 <button class="btn" style="flex:1;" onclick="closeModal()">취소</button>
@@ -686,13 +708,11 @@
     </div>
 
     <script>
-        // --- 상태 관리 ---
         let currentCalendarMode = 'week'; 
         let calendarBaseDate = new Date();
         let selectedFocus = 'protein';
         let pendingPlan = [];
 
-        // 데이터 저장소
         let mealData = JSON.parse(localStorage.getItem('mealDataStore')) || {};
 
         const dbCarbs = ["현미밥 1공기", "잡곡밥", "찐 고구마 1개", "통밀 식빵 2장", "바나나 1개", "오트밀 죽"];
@@ -722,7 +742,6 @@
             return `${y}-${m}-${d}`;
         }
 
-        // --- 그람수 입력 칸 바로 옆 실물 분량 계산 ---
         function updateMacroEquivalents() {
             const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
             const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
@@ -734,13 +753,12 @@
             const almonds = Math.round(fat / 0.5);
             const cabbages = (fiber / 25).toFixed(1);
 
-            document.getElementById('carbEquiv').innerText = `(🍚 쌀밥 약 ${riceBowls}공기 분량)`;
-            document.getElementById('proteinEquiv').innerText = `(🍗 닭가슴살 약 ${chickenBreasts}개 분량)`;
-            document.getElementById('fatEquiv').innerText = `(🥜 아몬드 약 ${almonds}알 분량)`;
-            document.getElementById('fiberEquiv').innerText = `(🥬 양배추 약 ${cabbages}개 분량)`;
+            document.getElementById('carbEquiv').innerText = `🍚 쌀밥 약 ${riceBowls}공기`;
+            document.getElementById('proteinEquiv').innerText = `🍗 닭가슴살 약 ${chickenBreasts}개`;
+            document.getElementById('fatEquiv').innerText = `🥜 아몬드 약 ${almonds}알`;
+            document.getElementById('fiberEquiv').innerText = `🥬 양배추 약 ${cabbages}개`;
         }
 
-        // --- 오늘의 식단 및 칼로리 표시 ---
         function renderTodayMeals() {
             const todayKey = getFormattedDate(new Date());
             document.getElementById('todayDateStr').innerText = todayKey;
@@ -779,13 +797,11 @@
             document.getElementById('todayTotalCalDisplay').innerText = `${total.toLocaleString()} kcal`;
         }
 
-        // --- 주간 및 월간 칼로리 통계 자동 계산 ---
         function calculateStats() {
             const now = new Date();
             const currentYear = now.getFullYear();
             const currentMonth = now.getMonth();
 
-            // 주간 범위 계산 (이번 주 일요일 ~ 토요일)
             const startOfWeek = new Date(now);
             startOfWeek.setDate(now.getDate() - now.getDay());
             startOfWeek.setHours(0,0,0,0);
@@ -794,11 +810,8 @@
             endOfWeek.setDate(endOfWeek.getDate() + 6);
             endOfWeek.setHours(23,59,59,999);
 
-            let weekTotal = 0;
-            let weekDaysCount = 0;
-
-            let monthTotal = 0;
-            let monthDaysCount = 0;
+            let weekTotal = 0, weekDaysCount = 0;
+            let monthTotal = 0, monthDaysCount = 0;
 
             for (let dateKey in mealData) {
                 const item = mealData[dateKey];
@@ -808,13 +821,11 @@
 
                 const targetDate = new Date(dateKey + "T00:00:00");
 
-                // 주간 합계
                 if (targetDate >= startOfWeek && targetDate <= endOfWeek) {
                     weekTotal += dayCal;
                     weekDaysCount++;
                 }
 
-                // 월간 합계
                 if (targetDate.getFullYear() === currentYear && targetDate.getMonth() === currentMonth) {
                     monthTotal += dayCal;
                     monthDaysCount++;
@@ -830,7 +841,6 @@
             document.getElementById('monthAvgCal').innerText = `${monthAvg.toLocaleString()} kcal`;
         }
 
-        // --- 캘린더 렌더링 ---
         function renderCalendar() {
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
@@ -951,7 +961,6 @@
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        // --- 탄단지 기준 식단 생성 ---
         function generateByMacros() {
             const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
             const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
@@ -977,7 +986,7 @@
                     lunch: `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`,
                     dinner: `${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`,
                     bCal, lCal, dCal,
-                    desc: `총 ${totalCal} kcal (아침:${bCal} / 점심:${lCal} / 저녁:${dCal})`
+                    desc: `총 ${totalCal} kcal`
                 });
                 curr.setDate(curr.getDate() + 1);
             }
@@ -985,7 +994,6 @@
             showPreviewModal();
         }
 
-        // --- 칼로리 기준 식단 생성 ---
         function generateByCalories() {
             const cal = parseInt(document.getElementById('inputCalorie').value) || 2000;
             const startDateStr = document.getElementById('calStartDate').value;
@@ -1013,7 +1021,7 @@
                 } else if (selectedFocus === 'fiber') {
                     breakfast = `오트밀, ${getRandomItem(dbFibers)}`;
                     lunch = `현미밥, ${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`;
-                    dinner = `대용량 야채 샐러드, 두부구이`;
+                    dinner = `야채 샐러드, 두부구이`;
                 } else {
                     breakfast = `${getRandomItem(dbCarbs)}, 바나나 1개`;
                     lunch = `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}, 야채`;
@@ -1033,7 +1041,6 @@
             showPreviewModal();
         }
 
-        // --- 치팅 데이 추가 ---
         function addCheatMeal() {
             const menu = document.getElementById('cheatMenuInput').value;
             const dateKey = document.getElementById('cheatDate').value;
@@ -1043,14 +1050,14 @@
 
             if (!mealData[dateKey]) {
                 mealData[dateKey] = {
-                    breakfast: "건강 클린식", bCal: 400,
-                    lunch: "건강 클린식", lCal: 600,
-                    dinner: "건강 클린식", dCal: 500
+                    breakfast: "클린식", bCal: 400,
+                    lunch: "클린식", lCal: 600,
+                    dinner: "클린식", dCal: 500
                 };
             }
 
             const cheatFormat = `[치팅] ${menu}`;
-            const cheatCal = 900; // 치팅식 기본 추정 칼로리
+            const cheatCal = 900;
 
             if (mealType === 'all') {
                 mealData[dateKey].breakfast = cheatFormat; mealData[dateKey].bCal = cheatCal;
@@ -1063,7 +1070,7 @@
 
             localStorage.setItem('mealDataStore', JSON.stringify(mealData));
 
-            alert(`🎉 ${dateKey} 식단에 [${menu}] 치팅 데이가 등록되었습니다!`);
+            alert(`🎉 ${dateKey} 식단에 치팅 데이가 등록되었습니다!`);
             renderTodayMeals();
             renderCalendar();
             calculateStats();
@@ -1108,7 +1115,7 @@
             renderTodayMeals();
             renderCalendar();
             calculateStats();
-            alert("식단 및 칼로리가 정상적으로 업데이트 되었습니다!");
+            alert("식단이 정상 적용되었습니다!");
         }
     </script>
 </body>
