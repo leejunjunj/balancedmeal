@@ -3,653 +3,1266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>스마트 캘린더 & Gemini AI 학습 플래너</title>
+    <title>맞춤형 스마트 식단 플래너</title>
+
+    <!-- Safari Web App Setup -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="식단 플래너">
+
     <style>
         :root {
-            --red: #ef4444; --orange: #f97316; --green: #22c55e;
-            --blue: #3b82f6; --navy: #1e3a8a; --pink: #ec4899; --purple: #a855f7;
+            --primary: #E91E63;
+            --primary-dark: #C2185B;
+            --primary-light: #FCE4EC;
+            --secondary: #AB47BC;
+            --accent: #FF9800;
+            --cheat-color: #D81B60;
+            --cheat-bg: #F8BBD0;
+            --card-bg: #FFFFFF;
+            --text: #333333;
+            --text-muted: #666666;
+            --border: #F48FB1;
+            --radius: 16px;
         }
-        * { box-sizing: border-box; touch-action: manipulation; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            margin: 0; padding: 12px; color: #1e293b; min-height: 100vh;
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFE4E8 50%, #FCE4EC 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            padding: 16px;
+            max-width: 768px;
+            margin: 0 auto;
+            padding-bottom: 50px;
         }
-        .container { max-width: 500px; margin: 0 auto; }
-        .card { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px); 
-            padding: 16px; 
-            border-radius: 16px; 
-            margin-bottom: 15px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08); 
-            overflow: hidden; 
-        }
-        
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .calendar-header button { background: #ffe4e6; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; color: #be185d; }
-        .calendar-header h2 { margin: 0; font-size: 18px; color: #831843; }
 
-        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #9f1239; font-size: 12px; margin-bottom: 6px; }
-        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: minmax(75px, auto); gap: 2px; width: 100%; position: relative; }
-        .day-cell { 
-            background: #fff1f2; border-radius: 6px; padding: 4px; font-size: 11px; 
-            display: flex; flex-direction: column; cursor: pointer; border: 1px solid #fecdd3; 
-            min-height: 75px; position: relative;
+        header {
+            text-align: center;
+            margin-bottom: 16px;
         }
-        .day-cell.selected { border-color: var(--pink); background: #fce7f3; }
-        .day-num { font-weight: bold; margin-bottom: 2px; color: #881337; z-index: 2; }
 
-        .event-spanning-bar {
-            position: absolute; height: 18px; color: white;
-            font-size: 10px; font-weight: 600; display: flex; align-items: center;
-            padding: 0 6px; border-radius: 4px; white-space: nowrap; overflow: hidden;
-            text-overflow: ellipsis; z-index: 5; box-shadow: 0 1px 3px rgba(0,0,0,0.15); cursor: pointer;
+        h1 {
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
         }
-        .bg-red { background: var(--red) !important; }
-        .bg-orange { background: var(--orange) !important; }
-        .bg-green { background: var(--green) !important; }
-        .bg-blue { background: var(--blue) !important; }
-        .bg-navy { background: var(--navy) !important; }
-        .bg-pink { background: var(--pink) !important; }
-        .bg-purple { background: var(--purple) !important; }
 
-        .input-group { margin-bottom: 10px; }
-        .input-group label { display: block; font-size: 11px; font-weight: bold; color: #9f1239; margin-bottom: 3px; }
-        input, select { width: 100%; padding: 8px; border: 1px solid #fbcfe8; border-radius: 8px; font-size: 13px; background: #fff; }
-        .row { display: flex; gap: 6px; }
-        
-        .btn { background: var(--pink); color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 4px; }
-        .btn-purple { background: var(--purple); }
-        .btn-green { background: var(--green); }
-        .btn-danger { background: var(--red); padding: 4px 8px; font-size: 11px; width: auto; margin: 0; }
-        .btn-edit { background: var(--blue); padding: 4px 8px; font-size: 11px; width: auto; margin: 0; }
-        .btn:disabled { background: #fda4af; cursor: not-allowed; }
-        
-        .timeline-item { 
-            background: #fff1f2; border-left: 4px solid var(--pink); padding: 10px; 
-            border-radius: 0 8px 8px 0; margin-bottom: 8px; font-size: 12px;
-            display: flex; justify-content: space-between; align-items: center;
+        .card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(233, 30, 99, 0.08);
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
-        .timeline-actions { display: flex; gap: 4px; }
 
-        #aiResult { margin-top: 12px; background: #faf5ff; padding: 12px; border-radius: 12px; font-size: 12px; border: 1px solid #e9d5ff; display: none; }
-        .ai-summary-badge { background: #f3e8ff; border: 1px solid #d8b4fe; color: #6b21a8; padding: 8px 10px; border-radius: 8px; font-size: 11px; margin-bottom: 10px; line-height: 1.5; }
-        .ai-plan-card { background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--purple); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-        .ai-plan-phase { font-size: 10px; font-weight: bold; color: var(--purple); background: #f3e8ff; padding: 3px 8px; border-radius: 12px; display: inline-block; margin-bottom: 6px; }
-        .ai-focus-tip { background: #fff7ed; border: 1px solid #ffedd5; color: #c2410c; padding: 6px 8px; border-radius: 6px; font-size: 11px; margin: 6px 0; font-weight: 500; }
-        .ai-subtask-list { margin: 6px 0 0 0; padding: 0; list-style: none; }
-        .ai-subtask-list li { font-size: 11px; color: #334155; margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
-        .ai-subtask-list input[type="checkbox"] { margin-top: 2px; width: auto; }
-        
-        .key-input-box { background: #fdf2f8; border: 1px dashed #f472b6; padding: 10px; border-radius: 10px; margin-bottom: 12px; }
-        .error-box { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px; border-radius: 8px; font-size: 12px; margin-top: 8px; line-height: 1.5; }
+        /* 1. 오늘의 식단 */
+        .today-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .today-title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .today-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .meal-box {
+            background: #FFF0F5;
+            border-radius: 12px;
+            padding: 8px 6px;
+            border-top: 3px solid var(--primary);
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .meal-box.is-cheat {
+            background: var(--cheat-bg);
+            border-top-color: var(--cheat-color);
+        }
+
+        .meal-box-header {
+            font-size: 0.78rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .cheat-tag {
+            background: var(--cheat-color);
+            color: white;
+            font-size: 0.6rem;
+            padding: 1px 4px;
+            border-radius: 6px;
+        }
+
+        .meal-box-content {
+            font-size: 0.78rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: #333;
+            word-break: keep-all;
+            flex-grow: 1;
+        }
+
+        .meal-cal-badge {
+            font-size: 0.68rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-top: 4px;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 4px;
+            border-radius: 4px;
+            text-align: right;
+        }
+
+        .today-total-bar {
+            background: #FFE6EC;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        /* 통계 요약 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .stat-box {
+            background: #FFF5F7;
+            border: 1px solid #FFCDD2;
+            padding: 8px 10px;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        /* 캘린더 */
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .btn-toggle {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .calendar-grid-week, .calendar-grid-month {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 4px;
+            width: 100%;
+        }
+
+        .day-card {
+            background: #FFFFFF;
+            border: 1px solid #F8BBD0;
+            border-radius: 8px;
+            padding: 4px 2px;
+            min-height: 95px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .day-card.today {
+            border: 2px solid var(--primary);
+            background: #FFF0F5;
+        }
+
+        .day-number {
+            font-weight: bold;
+            font-size: 0.72rem;
+            text-align: center;
+            margin-bottom: 2px;
+            color: #555;
+            white-space: nowrap;
+        }
+
+        .day-card.today .day-number {
+            color: var(--primary-dark);
+        }
+
+        .day-meal {
+            font-size: 0.6rem;
+            margin-top: 2px;
+            padding: 1px 2px;
+            background: #FFF5F7;
+            border-radius: 3px;
+            border: 1px solid #FFCDD2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .day-meal.cheat-meal-slot {
+            background: var(--cheat-bg);
+            border-color: #F48FB1;
+            color: var(--cheat-color);
+            font-weight: bold;
+        }
+
+        .day-cal-total {
+            font-size: 0.6rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            text-align: center;
+            margin-top: auto;
+            padding-top: 2px;
+            border-top: 1px dashed #FFCDD2;
+            white-space: nowrap;
+        }
+
+        /* 그람수 입력 박스 3열 고정 Grid 레이아웃 */
+        .tab-group {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+            background: #FFE6EC;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px 4px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.78rem;
+            color: #777;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary-dark);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+
+        .macro-input-card {
+            background: #FFFFFF;
+            border: 1px solid #FFCDD2;
+            border-radius: 10px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: 85px 88px 1fr;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .macro-label-wrap {
+            display: flex;
+            align-items: center;
+        }
+
+        .macro-label-wrap label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #444;
+            white-space: nowrap;
+        }
+
+        .macro-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .macro-input-wrap input {
+            width: 58px;
+            padding: 5px 6px;
+            border: 1px solid #F48FB1;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            text-align: right;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .macro-input-wrap input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 4px rgba(233,30,99,0.2);
+        }
+
+        .unit-text {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .hint-badge {
+            font-size: 0.7rem;
+            color: var(--primary-dark);
+            font-weight: bold;
+            background: #FFF0F5;
+            padding: 4px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+            border: 1px solid #FFCDD2;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .focus-options {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .focus-btn {
+            flex: 1;
+            padding: 8px 2px;
+            border: 1px solid #FFCDD2;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .focus-btn.selected {
+            border-color: var(--primary);
+            background: #FFF0F5;
+            color: var(--primary-dark);
+            font-weight: bold;
+        }
+
+        .cheat-search-group {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .db-status-badge {
+            font-size: 0.7rem;
+            color: #D81B60;
+            background: #FCE4EC;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .cheat-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .preset-chip {
+            background: #FFF0F5;
+            border: 1px solid #FFCDD2;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 6px;
+            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.2);
+        }
+
+        .action-btn.cheat-btn {
+            background: var(--cheat-color);
+        }
+
+        /* 모달 팝업 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            max-width: 480px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .preview-item {
+            background: #FFF5F7;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            border-left: 3px solid var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+    <header>
+        <h1>🌸 스마트 식단 플래너</h1>
+    </header>
 
-    <!-- 1. 일정 추가/수정 카드 -->
-    <div class="card">
-        <h4 id="formHeaderTitle" style="margin:0 0 10px 0; font-size:15px; color:#831843;">➕ 새로운 일정 추가</h4>
-        <input type="hidden" id="editEventIndex" value="-1">
-        <div class="input-group">
-            <label>할 일 이름</label>
-            <input type="text" id="eventTitle" placeholder="예: 식품화학 중간고사">
+    <!-- 1. 상단: 오늘의 식단 -->
+    <section class="card">
+        <div class="today-header">
+            <span class="today-title">📌 오늘의 식단</span>
+            <span id="todayDateStr" style="font-size:0.8rem; font-weight: bold; color:#777;"></span>
         </div>
-        <div class="row">
-            <div class="input-group" style="flex:1;">
-                <label>시작일</label>
-                <input type="date" id="startDate">
-            </div>
-            <div class="input-group" style="flex:1;">
-                <label>종료일</label>
-                <input type="date" id="endDate">
-            </div>
-        </div>
-        <div class="input-group">
-            <label>카테고리 색상</label>
-            <select id="eventCategory">
-                <option value="bg-red">🔴 중요한 일</option>
-                <option value="bg-orange">🟠 일자리</option>
-                <option value="bg-green">🟢 친구</option>
-                <option value="bg-blue">🔵 학교 일</option>
-                <option value="bg-navy">🟦 과제</option>
-                <option value="bg-pink">🩷 여행</option>
-                <option value="bg-purple">🟣 기타</option>
-            </select>
-        </div>
-        <div class="row">
-            <button class="btn" id="saveEventBtn" onclick="saveEvent()">일정 저장하기</button>
-            <button class="btn" id="cancelEditBtn" style="display:none; background:#64748b;" onclick="resetForm()">취소</button>
-        </div>
-    </div>
 
-    <!-- 2. 캘린더 카드 -->
-    <div class="card">
-        <div class="calendar-header">
-            <button onclick="changeMonth(-1)">◀</button>
-            <h2 id="monthYear">2026년 8월</h2>
-            <button onclick="changeMonth(1)">▶</button>
-        </div>
-        <div class="weekdays">
-            <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
-        </div>
-        <div style="position: relative;">
-            <div class="days-grid" id="daysContainer"></div>
-            <div id="eventBarsContainer" style="position: absolute; top: 0; left: 0; width: 100%; pointer-events: none;"></div>
-        </div>
-    </div>
-
-    <!-- 3. 타임라인 (수정/삭제) -->
-    <div class="card">
-        <h3 id="selectedDateTitle" style="margin-top:0; font-size:15px; color:#831843;">날짜를 선택하세요</h3>
-        <div id="timelineContainer">
-            <p style="color: #9f1239; font-size: 12px; margin: 0; opacity: 0.7;">달력에서 날짜를 누르면 일정이 표시됩니다.</p>
-        </div>
-    </div>
-
-    <!-- 4. Gemini AI 학습 플래너 -->
-    <div class="card">
-        <h2 style="margin-top:0; font-size:16px; color:#831843;">🤖 Gemini AI 학습 플래너</h2>
-        
-        <!-- API 키 설정 (입력 완료 시 상자 숨김) -->
-        <div class="key-input-box">
-            <div id="keyInputSection">
-                <label style="color:#be185d; font-weight:bold; font-size:11px;">🔑 Gemini API Key 입력 (최초 1회)</label>
-                <div class="row" style="margin-top:4px;">
-                    <input type="password" id="userApiKey" placeholder="API Key 입력 (AQ...)" style="flex:1;">
-                    <button type="button" class="btn btn-purple" style="width:auto; padding:0 12px; margin:0; font-size:12px;" onclick="saveKeyAndHide()">저장</button>
+        <div class="today-grid">
+            <div id="breakfastBox" class="meal-box">
+                <div class="meal-box-header">
+                    <span>🌅 아침</span>
+                    <span id="breakfastCheatTag" class="cheat-tag" style="display:none;">치팅</span>
                 </div>
-                <div style="font-size:10px; color:#9d174d; margin-top:4px;">* 입력하신 키는 사용자 기기(브라우저)에만 안전하게 보관됩니다.</div>
+                <div id="todayBreakfastContent" class="meal-box-content">등록 없음</div>
+                <div id="breakfastCal" class="meal-cal-badge">- kcal</div>
             </div>
-            
-            <div id="keySavedSection" style="display:none; justify-content:space-between; align-items:center;">
-                <span style="font-size:12px; color:#15803d; font-weight:bold;">✅ API 키가 연동되었습니다.</span>
-                <button type="button" onclick="showKeyInput()" style="background:none; border:none; color:#be185d; font-size:11px; text-decoration:underline; cursor:pointer;">🔑 키 수정하기</button>
+
+            <div id="lunchBox" class="meal-box">
+                <div class="meal-box-header">
+                    <span>☀️ 점심</span>
+                    <span id="lunchCheatTag" class="cheat-tag" style="display:none;">치팅</span>
+                </div>
+                <div id="todayLunchContent" class="meal-box-content">등록 없음</div>
+                <div id="lunchCal" class="meal-cal-badge">- kcal</div>
             </div>
-        </div>
 
-        <div class="input-group">
-            <label>과목명 및 범위</label>
-            <input type="text" id="aiSubName" placeholder="예: 식품화학 1~5장 (지질 및 단백질)">
-        </div>
-
-        <div class="input-group">
-            <label>난이도 / 중요도</label>
-            <select id="aiImportance">
-                <option value="최상">최상 (우선순위 매우 높음 / 하루 2.5~3시간+)</option>
-                <option value="상" selected>상 (우선순위 높음 / 하루 1.5~2시간)</option>
-                <option value="중">중 (우선순위 보통 / 하루 1시간)</option>
-                <option value="하">하 (우선순위 낮음 / 하루 30분~1시간)</option>
-            </select>
-        </div>
-
-        <div class="row">
-            <div class="input-group" style="flex:1;">
-                <label>시작 기간</label>
-                <input type="date" id="aiStartDate">
-            </div>
-            <div class="input-group" style="flex:1;">
-                <label>종료 기간</label>
-                <input type="date" id="aiEndDate">
+            <div id="dinnerBox" class="meal-box">
+                <div class="meal-box-header">
+                    <span>🌙 저녁</span>
+                    <span id="dinnerCheatTag" class="cheat-tag" style="display:none;">치팅</span>
+                </div>
+                <div id="todayDinnerContent" class="meal-box-content">등록 없음</div>
+                <div id="dinnerCal" class="meal-cal-badge">- kcal</div>
             </div>
         </div>
 
-        <button class="btn btn-purple" id="aiGenBtn" onclick="generateAiSchedule()">✨ 50%/35%/15% AI 스케줄 생성</button>
+        <div class="today-total-bar">
+            <span>🔥 오늘 총 섭취 칼로리</span>
+            <span id="todayTotalCalDisplay">0 kcal</span>
+        </div>
+    </section>
 
-        <div id="aiResult"></div>
-        <button class="btn btn-green" id="applyAiBtn" style="display:none; margin-top:10px;" onclick="applyAiToCalendar()">📅 캘린더에 일괄 반영하기</button>
+    <!-- 2. 주간 및 월간 칼로리 통계 -->
+    <section class="card">
+        <h2 style="font-size: 0.95rem; margin-bottom: 8px; color: var(--primary-dark);">📊 칼로리 통계 요약</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-label">이번 주 총 칼로리</span>
+                <span id="weekTotalCal" class="stat-value">0 kcal</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">이번 주 일평균</span>
+                <span id="weekAvgCal" class="stat-value">0 kcal</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">이번 달 총 칼로리</span>
+                <span id="monthTotalCal" class="stat-value">0 kcal</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">이번 달 일평균</span>
+                <span id="monthAvgCal" class="stat-value">0 kcal</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 중단: 캘린더 -->
+    <section class="card">
+        <div class="calendar-controls">
+            <div>
+                <button class="btn" onclick="navigateCalendar(-1)">◀ 이전</button>
+                <span id="calendarTitle" style="font-weight:bold; margin: 0 4px; font-size: 0.85rem;"></span>
+                <button class="btn" onclick="navigateCalendar(1)">다음 ▶</button>
+            </div>
+            <button class="btn btn-toggle" id="viewToggleBtn" onclick="toggleCalendarView()">월간 보기</button>
+        </div>
+        <div id="calendarGrid" class="calendar-grid-week"></div>
+    </section>
+
+    <!-- 4. 하단: 식단 설정 폼 (스마트 DB 조회가 포함된 치팅 데이 기능) -->
+    <section class="card">
+        <h2 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--primary-dark);">⚙️ 식단 설정 및 치팅 데이</h2>
+        
+        <div class="tab-group">
+            <button class="tab-btn active" onclick="switchTab('macros')">탄단지 기준</button>
+            <button class="tab-btn" onclick="switchTab('calories')">칼로리 기준</button>
+            <button class="tab-btn" onclick="switchTab('cheat')">🎉 치팅 데이!</button>
+        </div>
+
+        <!-- 탭 1: 탄단지 & 식이섬유 입력 -->
+        <div id="macrosForm" class="form-section active">
+            <div class="macro-input-card">
+                <div class="macro-label-wrap">
+                    <label for="inputCarb">🌾 탄수화물</label>
+                </div>
+                <div class="macro-input-wrap">
+                    <input type="number" id="inputCarb" value="200" oninput="updateMacroEquivalents()">
+                    <span class="unit-text">g</span>
+                </div>
+                <div id="carbEquiv" class="hint-badge">🍚 쌀밥 약 2.9공기</div>
+            </div>
+
+            <div class="macro-input-card">
+                <div class="macro-label-wrap">
+                    <label for="inputProtein">🍗 단백질</label>
+                </div>
+                <div class="macro-input-wrap">
+                    <input type="number" id="inputProtein" value="100" oninput="updateMacroEquivalents()">
+                    <span class="unit-text">g</span>
+                </div>
+                <div id="proteinEquiv" class="hint-badge">🍗 닭가슴살 약 4개</div>
+            </div>
+
+            <div class="macro-input-card">
+                <div class="macro-label-wrap">
+                    <label for="inputFat">🥑 지방</label>
+                </div>
+                <div class="macro-input-wrap">
+                    <input type="number" id="inputFat" value="50" oninput="updateMacroEquivalents()">
+                    <span class="unit-text">g</span>
+                </div>
+                <div id="fatEquiv" class="hint-badge">🥜 아몬드 약 100알</div>
+            </div>
+
+            <div class="macro-input-card">
+                <div class="macro-label-wrap">
+                    <label for="inputFiber">🥦 식이섬유</label>
+                </div>
+                <div class="macro-input-wrap">
+                    <input type="number" id="inputFiber" value="25" oninput="updateMacroEquivalents()">
+                    <span class="unit-text">g</span>
+                </div>
+                <div id="fiberEquiv" class="hint-badge">🥬 양배추 약 1개</div>
+            </div>
+
+            <div class="input-grid" style="margin-top: 10px;">
+                <div>
+                    <label style="font-size:0.75rem; font-weight:bold; color:#666;">시작일</label>
+                    <input type="date" id="macroStartDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; font-size:0.8rem; margin-top:2px;">
+                </div>
+                <div>
+                    <label style="font-size:0.75rem; font-weight:bold; color:#666;">기간 (일)</label>
+                    <input type="number" id="macroDays" value="7" min="1" max="31" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; font-size:0.8rem; margin-top:2px;">
+                </div>
+            </div>
+            <button class="action-btn" onclick="generateByMacros()">맞춤 식단 생성 및 적용</button>
+        </div>
+
+        <!-- 탭 2: 칼로리 기준 -->
+        <div id="caloriesForm" class="form-section">
+            <div style="margin-bottom: 8px;">
+                <label style="font-size: 0.75rem; font-weight: bold; color: #666;">목표 하루 칼로리 (kcal)</label>
+                <input type="number" id="inputCalorie" value="2000" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
+            </div>
+            <div style="margin-bottom: 8px;">
+                <label style="font-size: 0.75rem; font-weight: bold; color: #666; display:block; margin-bottom: 4px;">영양 강조 선택</label>
+                <div class="focus-options">
+                    <button class="focus-btn selected" onclick="selectFocus(this, 'protein')">🍗 단백질 위주</button>
+                    <button class="focus-btn" onclick="selectFocus(this, 'fiber')">🥗 식이섬유 위주</button>
+                    <button class="focus-btn" onclick="selectFocus(this, 'carb')">🍚 탄수화물 위주</button>
+                </div>
+            </div>
+            <div class="input-grid">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: bold; color: #666;">시작일</label>
+                    <input type="date" id="calStartDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: bold; color: #666;">종료일</label>
+                    <input type="date" id="calEndDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
+                </div>
+            </div>
+            <button class="action-btn" onclick="generateByCalories()">칼로리 식단 추천 및 적용</button>
+        </div>
+
+        <!-- 탭 3: 치팅 데이 (공공 DB 스마트 검색 + 줄임말 자동 변환 + 안전장치) -->
+        <div id="cheatForm" class="form-section">
+            <div style="margin-bottom: 4px;">
+                <label style="font-size: 0.75rem; font-weight: bold; color: #666;">치팅 메뉴 입력 🍕</label>
+                <div class="cheat-search-group" style="margin-top:2px;">
+                    <input type="text" id="cheatMenuInput" placeholder="예: 엽떡, 치즈계란말이, 교촌치킨" style="flex:1; padding:8px; border:1px solid #F48FB1; border-radius:6px;">
+                    <button class="search-btn" onclick="smartNutritionSearch()">🔍 DB 검색</button>
+                </div>
+            </div>
+
+            <div id="dbStatusBadge" class="db-status-badge">💡 줄임말(엽떡, 신전 등)도 자동으로 공식 명칭 변환 검색됩니다.</div>
+
+            <div style="margin-bottom: 8px;">
+                <label style="font-size: 0.75rem; font-weight: bold; color: #666;">계산된 칼로리 (kcal) <span style="font-size:0.68rem; color:#888;">(직접 수정 가능)</span></label>
+                <input type="number" id="cheatCalInput" value="500" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px; font-weight:bold; color:var(--primary-dark);">
+            </div>
+
+            <div class="cheat-presets">
+                <span class="preset-chip" onclick="setCheatPreset('엽기떡볶이', 1100)">🥘 엽떡</span>
+                <span class="preset-chip" onclick="setCheatPreset('치즈계란말이', 450)">🍳 치즈계란말이</span>
+                <span class="preset-chip" onclick="setCheatPreset('교촌 허니콤보', 1900)">🍗 교촌치킨</span>
+                <span class="preset-chip" onclick="setCheatPreset('페퍼로니 피자', 1800)">🍕 피자</span>
+                <span class="preset-chip" onclick="setCheatPreset('마라탕', 1000)">🌶️ 마라탕</span>
+            </div>
+
+            <div class="input-grid">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: bold; color: #666;">날짜</label>
+                    <input type="date" id="cheatDate" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: bold; color: #666;">식사 타임</label>
+                    <select id="cheatMealType" style="width:100%; padding:8px; border:1px solid #F48FB1; border-radius:6px; margin-top:2px;">
+                        <option value="all">하루 전체</option>
+                        <option value="breakfast">아침</option>
+                        <option value="lunch" selected>점심</option>
+                        <option value="dinner">저녁</option>
+                    </select>
+                </div>
+            </div>
+            <button class="action-btn cheat-btn" onclick="addCheatMeal()">🎉 치팅 데이 등록하기</button>
+        </div>
+    </section>
+
+    <!-- 미리보기 모달 -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">📋 식단 미리보기</div>
+            <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">아래 식단으로 달력에 적용합니다.</p>
+            <div id="previewList"></div>
+            <div class="modal-actions">
+                <button class="btn" style="flex:1;" onclick="closeModal()">취소</button>
+                <button class="btn" style="flex:1; background:var(--primary); color:white; border:none;" onclick="confirmAndSave()">확인 및 등록</button>
+            </div>
+        </div>
     </div>
 
-</div>
+    <script>
+        let currentCalendarMode = 'week'; 
+        let calendarBaseDate = new Date();
+        let selectedFocus = 'protein';
+        let pendingPlan = [];
 
-<script>
-    let events = [
-        { title: "부산 여행", start: "2026-08-14", end: "2026-08-17", category: "bg-pink" }
-    ];
+        let mealData = JSON.parse(localStorage.getItem('mealDataStore')) || {};
 
-    let today = new Date();
-    let currentYear = today.getFullYear();
-    let currentMonth = today.getMonth();
-    let selectedDateStr = "";
-    let aiGeneratedEvents = [];
+        const dbCarbs = ["현미밥 1공기", "잡곡밥", "찐 고구마 1개", "통밀 식빵 2장", "바나나 1개", "오트밀 죽"];
+        const dbProteins = ["닭가슴살 구이", "삶은 계란 2개", "소고기 우둔살", "연어 구이", "두부 구이", "돼지 안심"];
+        const dbFibers = ["야채 샐러드", "브로콜리 데침", "방울토마토 10개", "사과 반 개", "나물 무침", "양배추 쌈"];
 
-    function formatDate(d) {
-        let year = d.getFullYear();
-        let month = String(d.getMonth() + 1).padStart(2, '0');
-        let day = String(d.getDate()).padStart(2, '0');
-        return year + "-" + month + "-" + day;
-    }
+        // 1. 스마트 줄임말 / 브랜드 매핑 사전
+        const aliasMap = {
+            "엽떡": "엽기떡볶이",
+            "신전": "신전떡볶이",
+            "교촌": "교촌치킨",
+            "뿌링클": "치킨",
+            "치느님": "치킨",
+            "계란말이": "계란말이",
+            "치즈계란말이": "치즈계란말이",
+            "삼겹": "삼겹살",
+            "짜장": "자장면",
+            "짬뽕": "짬뽕",
+            "돈까스": "돈가스",
+            "마라": "마라탕"
+        };
 
-    window.onload = function() {
-        const todayStr = formatDate(today);
-        selectDate(todayStr);
-
-        document.getElementById('aiStartDate').value = todayStr;
-        let futureDate = new Date();
-        futureDate.setDate(today.getDate() + 4);
-        document.getElementById('aiEndDate').value = formatDate(futureDate);
-
-        checkSavedKey();
-    };
-
-    function checkSavedKey() {
-        const savedKey = localStorage.getItem('gemini_user_key');
-        const inputSection = document.getElementById('keyInputSection');
-        const savedSection = document.getElementById('keySavedSection');
-        
-        if (savedKey && savedKey.trim() !== '') {
-            document.getElementById('userApiKey').value = savedKey;
-            inputSection.style.display = 'none';
-            savedSection.style.display = 'flex';
-        } else {
-            inputSection.style.display = 'block';
-            savedSection.style.display = 'none';
-        }
-    }
-
-    function saveKeyAndHide() {
-        const key = document.getElementById('userApiKey').value.trim();
-        if (!key) {
-            alert('API 키를 입력해 주세요!');
-            return;
-        }
-        localStorage.setItem('gemini_user_key', key);
-        checkSavedKey();
-        alert('API 키가 저장되었습니다!');
-    }
-
-    function showKeyInput() {
-        document.getElementById('keyInputSection').style.display = 'block';
-        document.getElementById('keySavedSection').style.display = 'none';
-    }
-
-    function renderCalendar(year, month) {
-        const monthYearEl = document.getElementById('monthYear');
-        const daysContainer = document.getElementById('daysContainer');
-        const barsContainer = document.getElementById('eventBarsContainer');
-        
-        monthYearEl.innerText = year + "년 " + (month + 1) + "월";
-        daysContainer.innerHTML = '';
-        barsContainer.innerHTML = '';
-
-        const firstDayIndex = new Date(year, month, 1).getDay();
-        const totalDays = new Date(year, month + 1, 0).getDate();
-
-        let totalCells = [];
-        for (let i = 0; i < firstDayIndex; i++) { totalCells.push(null); }
-        for (let day = 1; day <= totalDays; day++) {
-            let mStr = String(month + 1).padStart(2, '0');
-            let dStr = String(day).padStart(2, '0');
-            totalCells.push({ day: day, dateStr: year + "-" + mStr + "-" + dStr });
-        }
-
-        totalCells.forEach(function(cellInfo) {
-            const cell = document.createElement('div');
-            cell.className = 'day-cell';
-            if (cellInfo === null) {
-                cell.style.visibility = 'hidden';
-            } else {
-                if (cellInfo.dateStr === selectedDateStr) cell.classList.add('selected');
-                cell.innerHTML = '<span class="day-num">' + cellInfo.day + '</span>';
-                cell.onclick = function() { selectDate(cellInfo.dateStr); };
-            }
-            daysContainer.appendChild(cell);
-        });
-
-        setTimeout(function() { renderEventBars(year, month, firstDayIndex, totalDays); }, 10);
-    }
-
-    function renderEventBars(year, month, firstDayIndex, totalDays) {
-        const barsContainer = document.getElementById('eventBarsContainer');
-        const gridCells = document.querySelectorAll('.day-cell');
-        if (gridCells.length === 0) return;
-
-        events.forEach(function(ev, evIdx) {
-            let mStr = String(month + 1).padStart(2, '0');
-            let monthStartStr = year + "-" + mStr + "-01";
-            let monthEndStr = year + "-" + mStr + "-" + String(totalDays).padStart(2, '0');
-
-            if (ev.end >= monthStartStr && ev.start <= monthEndStr) {
-                let effStart = ev.start < monthStartStr ? monthStartStr : ev.start;
-                let effEnd = ev.end > monthEndStr ? monthEndStr : ev.end;
-
-                let startDay = parseInt(effStart.split('-')[2]);
-                let endDay = parseInt(effEnd.split('-')[2]);
-
-                let startIndex = firstDayIndex + startDay - 1;
-                let endIndex = firstDayIndex + endDay - 1;
-
-                let startRow = Math.floor(startIndex / 7);
-                let endRow = Math.floor(endIndex / 7);
-                let parentRect = document.getElementById('daysContainer').getBoundingClientRect();
-
-                for (let row = startRow; row <= endRow; row++) {
-                    let curStartIdx = Math.max(startIndex, row * 7);
-                    let curEndIdx = Math.min(endIndex, row * 7 + 6);
-
-                    let curStartCell = gridCells[curStartIdx];
-                    let curEndCell = gridCells[curEndIdx];
-
-                    if (curStartCell && curEndCell) {
-                        let cStartRect = curStartCell.getBoundingClientRect();
-                        let cEndRect = curEndCell.getBoundingClientRect();
-
-                        let left = cStartRect.left - parentRect.left + 2;
-                        let top = cStartRect.top - parentRect.top + 22 + ((evIdx % 3) * 19);
-                        let width = (cEndRect.right - cStartRect.left) - 4;
-
-                        const bar = document.createElement('div');
-                        bar.className = 'event-spanning-bar ' + ev.category;
-                        bar.style.left = left + 'px';
-                        bar.style.top = top + 'px';
-                        bar.style.width = width + 'px';
-                        bar.innerText = ev.title;
-                        bar.onclick = function(e) { e.stopPropagation(); selectDate(ev.start); };
-                        barsContainer.appendChild(bar);
-                    }
-                }
-            }
-        });
-    }
-
-    function changeMonth(dir) {
-        currentMonth += dir;
-        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-        else if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-        renderCalendar(currentYear, currentMonth);
-    }
-
-    function selectDate(dateStr) {
-        selectedDateStr = dateStr;
-        renderCalendar(currentYear, currentMonth);
-
-        const titleEl = document.getElementById('selectedDateTitle');
-        const timelineEl = document.getElementById('timelineContainer');
-        titleEl.innerText = dateStr + " 일정";
-
-        let dayEvents = [];
-        events.forEach((ev, idx) => {
-            if (dateStr >= ev.start && dateStr <= ev.end) {
-                dayEvents.push({ ...ev, originalIndex: idx });
-            }
-        });
-        
-        if (dayEvents.length === 0) {
-            timelineEl.innerHTML = '<p style="color: #9f1239; font-size: 12px; margin: 0; opacity: 0.7;">등록된 일정이 없습니다.</p>';
-        } else {
-            timelineEl.innerHTML = dayEvents.map(function(ev) {
-                return `
-                <div class="timeline-item">
-                    <div>
-                        <strong>${ev.title}</strong> 
-                        <span style="font-size:10px; color:#be185d;">(${ev.start} ~ ${ev.end})</span>
-                    </div>
-                    <div class="timeline-actions">
-                        <button class="btn btn-edit" onclick="editEvent(${ev.originalIndex})">✏️ 수정</button>
-                        <button class="btn btn-danger" onclick="deleteEvent(${ev.originalIndex})">🗑️ 삭제</button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        if (document.getElementById('editEventIndex').value === "-1") {
-            document.getElementById('startDate').value = dateStr;
-            document.getElementById('endDate').value = dateStr;
-        }
-    }
-
-    function saveEvent() {
-        let title = document.getElementById('eventTitle').value.trim();
-        let start = document.getElementById('startDate').value;
-        let end = document.getElementById('endDate').value || start;
-        let category = document.getElementById('eventCategory').value;
-        let editIdx = parseInt(document.getElementById('editEventIndex').value);
-
-        if (!title || !start) { alert("할 일 이름과 시작일을 입력해주세요!"); return; }
-
-        if (editIdx >= 0) {
-            events[editIdx] = { title, start, end, category };
-            alert("일정이 수정되었습니다!");
-        } else {
-            events.push({ title, start, end, category });
-            alert("일정이 추가되었습니다!");
-        }
-
-        resetForm();
-        renderCalendar(currentYear, currentMonth);
-        if(selectedDateStr) selectDate(selectedDateStr);
-    }
-
-    function editEvent(idx) {
-        let ev = events[idx];
-        document.getElementById('eventTitle').value = ev.title;
-        document.getElementById('startDate').value = ev.start;
-        document.getElementById('endDate').value = ev.end;
-        document.getElementById('eventCategory').value = ev.category;
-        document.getElementById('editEventIndex').value = idx;
-
-        document.getElementById('formHeaderTitle').innerText = "✏️ 일정 수정하기";
-        document.getElementById('saveEventBtn').innerText = "수정 완료";
-        document.getElementById('cancelEditBtn').style.display = 'block';
-    }
-
-    function deleteEvent(idx) {
-        if (confirm(`'${events[idx].title}' 일정을 삭제하시겠습니까?`)) {
-            events.splice(idx, 1);
-            renderCalendar(currentYear, currentMonth);
-            if(selectedDateStr) selectDate(selectedDateStr);
-        }
-    }
-
-    function resetForm() {
-        document.getElementById('eventTitle').value = '';
-        document.getElementById('editEventIndex').value = "-1";
-        document.getElementById('formHeaderTitle').innerText = "➕ 새로운 일정 추가";
-        document.getElementById('saveEventBtn').innerText = "일정 저장하기";
-        document.getElementById('cancelEditBtn').style.display = 'none';
-        if(selectedDateStr) {
-            document.getElementById('startDate').value = selectedDateStr;
-            document.getElementById('endDate').value = selectedDateStr;
-        }
-    }
-
-    /* Gemini AI 호출 기능 (다중 모델 자동 백업 시도 방식) */
-    async function generateAiSchedule() {
-        const resDiv = document.getElementById('aiResult');
-        const btn = document.getElementById('aiGenBtn');
-        const applyBtn = document.getElementById('applyAiBtn');
-
-        let key = localStorage.getItem('gemini_user_key') || document.getElementById('userApiKey').value.trim();
-
-        if (!key) {
-            resDiv.style.display = 'block';
-            resDiv.innerHTML = `<div class="error-box"><b>⚠️ API Key가 설정되지 않았습니다.</b><br>상단의 API 키 입력칸에 키를 입력하고 저장해 주세요!</div>`;
-            showKeyInput();
-            return;
-        }
-
-        const subName = document.getElementById('aiSubName').value.trim();
-        const importance = document.getElementById('aiImportance').value;
-        const startDateStr = document.getElementById('aiStartDate').value;
-        const endDateStr = document.getElementById('aiEndDate').value;
-
-        if (!subName || !startDateStr || !endDateStr) {
-            alert("과목명, 시작일, 종료일을 모두 입력해주세요!");
-            return;
-        }
-
-        const start = new Date(startDateStr);
-        const end = new Date(endDateStr);
-
-        if (start > end) {
-            alert("시작 날짜는 종료 날짜보다 빨라야 합니다!");
-            return;
-        }
-
-        const diffTime = Math.abs(end - start);
-        const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-        let phase1Days = Math.round(totalDays * 0.50);
-        let phase2Days = Math.round(totalDays * 0.35);
-        let phase3Days = totalDays - phase1Days - phase2Days;
-
-        if (phase1Days < 1) phase1Days = 1;
-        if (totalDays >= 2 && phase2Days < 1) phase2Days = 1;
-        if (totalDays >= 3 && phase3Days < 1) {
-            phase3Days = 1;
-            phase2Days = Math.max(1, totalDays - phase1Days - phase3Days);
-        }
-
-        btn.disabled = true;
-        btn.innerText = "🧠 Gemini AI 분석 중...";
-        resDiv.style.display = 'block';
-        resDiv.innerHTML = "💡 난이도 및 50%/35%/15% 비율을 분석하여 일자별 맞춤 플랜을 생성 중입니다...";
-
-        const promptText = `
-대학생을 위한 초정밀 맞춤형 학습 플래너를 생성해줘.
-
-[학습 기본 정보]
-- 과목명 및 범위: ${subName}
-- 난이도/중요도: ${importance}
-- 학습 기간: ${startDateStr}부터 ${endDateStr}까지 (총 ${totalDays}일간)
-
-[비율 할당 지침 (50% / 35% / 15%)]
-전체 ${totalDays}일의 기간을 정확히 아래 3단계로 나누어 날짜별 계획을 작성할 것:
-1. 1단계 [개념 정리 (50%)] : 총 ${phase1Days}일간 진행
-2. 2단계 [심화문제 (35%)] : 총 ${phase2Days}일간 진행
-3. 3단계 [최종 총복습 (15%)] : 총 ${phase3Days}일간 진행
-
-[JSON 응답 규격]
-반드시 설명이나 마크다운 없이 아래 형식의 JSON 배열(Array)만 출력해줘:
-[
-  {
-    "dayNum": 1,
-    "date": "${startDateStr}",
-    "phase": "개념 정리 (50%)",
-    "title": "과목 주요 개념 요약",
-    "focusTip": "핵심 용어 위주로 먼저 암기하세요.",
-    "subtasks": ["개념 1장 읽기", "핵심 단어 노트 정리"]
-  }
-]
-`;
-
-        // 404 방지를 위해 시도할 모델 이름 후보들
-        const modelsToTry = [
-            'gemini-1.5-flash',
-            'gemini-2.0-flash',
-            'gemini-1.5-pro'
+        // 2. 안전장치용 기본 로컬 영양 DB (네트워크 불량 및 API 검색 실패 시 자동 매칭)
+        const localSafetyDb = [
+            { name: "엽기떡볶이", cal: 1100, desc: "떡볶이(1~2인분)" },
+            { name: "떡볶이", cal: 800, desc: "일반 떡볶이" },
+            { name: "치즈계란말이", cal: 450, desc: "치즈 계란말이 1접시" },
+            { name: "계란말이", cal: 350, desc: "계란말이 1접시" },
+            { name: "치킨", cal: 1800, desc: "치킨 1마리 평균" },
+            { name: "피자", cal: 1800, desc: "레귤러 피자 1판" },
+            { name: "마라탕", cal: 1000, desc: "마라탕 1그릇" },
+            { name: "삼겹살", cal: 1200, desc: "삼겹살 200g + 식사" },
+            { name: "자장면", cal: 750, desc: "짜장면 1그릇" },
+            { name: "짬뽕", cal: 680, desc: "짬뽕 1그릇" },
+            { name: "돈가스", cal: 850, desc: "돈까스 정식" },
+            { name: "햄버거", cal: 800, desc: "버거 세트" }
         ];
 
-        let success = false;
-        let lastErrorMsg = '';
+        window.onload = function() {
+            const todayStr = getFormattedDate(new Date());
+            document.getElementById('macroStartDate').value = todayStr;
+            document.getElementById('calStartDate').value = todayStr;
+            document.getElementById('cheatDate').value = todayStr;
+            
+            let defaultEnd = new Date();
+            defaultEnd.setDate(defaultEnd.getDate() + 6);
+            document.getElementById('calEndDate').value = getFormattedDate(defaultEnd);
 
-        for (let modelName of modelsToTry) {
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(key)}`;
-                
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: promptText }] }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            responseMimeType: "application/json"
-                        }
-                    })
-                });
+            updateMacroEquivalents();
+            renderTodayMeals();
+            renderCalendar();
+            calculateStats();
+        };
 
-                const responseData = await response.json();
+        function getFormattedDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
 
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        lastErrorMsg = `404 Not Found (${modelName})`;
-                        continue; // 다음 모델 시도
-                    }
-                    throw new Error(`[오류 ${response.status}] ${responseData.error?.message || 'API 키 인증 실패'}`);
+        // 🔍 공공 API 및 스마트 영양 DB 조회 메인 로직
+        async function smartNutritionSearch() {
+            let rawInput = document.getElementById('cheatMenuInput').value.trim();
+            const statusBadge = document.getElementById('dbStatusBadge');
+
+            if (!rawInput) {
+                alert("조회할 음식 이름을 입력해주세요!");
+                return;
+            }
+
+            // [로직 1] 줄임말 보정
+            let searchKeyword = rawInput;
+            for (let alias in aliasMap) {
+                if (rawInput.includes(alias)) {
+                    searchKeyword = rawInput.replace(alias, aliasMap[alias]);
+                    break;
                 }
+            }
 
-                const rawText = responseData.candidates[0].content.parts[0].text;
-                const planList = JSON.parse(rawText);
+            statusBadge.innerText = `⏳ '${searchKeyword}' 공공 영양 DB 조회 중...`;
+            statusBadge.style.color = "#C2185B";
 
-                aiGeneratedEvents = [];
+            try {
+                // [로직 2] 공공 데이터 OpenAPI 호출 (식품의약품안전처 영양 DB 오픈 서비스)
+                const apiUrl = `https://apis.data.go.kr/1471000/FoodNtrIrdntInfoService1/getFoodNtrItmCdList1?serviceKey=sample&desc_kor=${encodeURIComponent(searchKeyword)}&type=json`;
                 
-                let html = `
-                <div class="ai-summary-badge">
-                    <strong>🎯 [${subName}] ${totalDays}일 플랜 생성 완료!</strong><br>
-                    • 난이도: ${importance}<br>
-                    • 비율 적용: 개념(${phase1Days}일) ➔ 심화(${phase2Days}일) ➔ 복습(${phase3Days}일)
-                </div>`;
+                // 타임아웃 2.5초 설정 (응답이 늦으면 빠른 안전장치 가동)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2500);
 
-                planList.forEach(item => {
-                    let subtasksHtml = (item.subtasks || []).map(task => `
-                        <li>
-                            <input type="checkbox">
-                            <span>${task}</span>
-                        </li>
-                    `).join('');
-                    
-                    html += `
-                    <div class="ai-plan-card">
-                        <span class="ai-plan-phase">${item.phase || '학습 단계'}</span>
-                        <div style="font-size:13px; font-weight:bold; color:#0f172a; margin:3px 0 5px 0;">
-                            ${item.date} (Day ${item.dayNum}) : ${item.title}
-                        </div>
-                        ${item.focusTip ? `<div class="ai-focus-tip">💡 Tip: ${item.focusTip}</div>` : ''}
-                        <ul class="ai-subtask-list">
-                            ${subtasksHtml}
-                        </ul>
-                    </div>`;
+                const response = await fetch(apiUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
 
-                    aiGeneratedEvents.push({
-                        title: `[공부] ${item.title}`,
-                        start: item.date,
-                        end: item.date,
-                        category: "bg-navy"
-                    });
-                });
-
-                resDiv.innerHTML = html;
-                applyBtn.style.display = 'block';
-                success = true;
-                break; // 성공 시 반복문 탈출
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.body && data.body.items && data.body.items.length > 0) {
+                        const item = data.body.items[0];
+                        const fetchedCal = Math.round(parseFloat(item.NUTR_CONT1) || 500);
+                        document.getElementById('cheatCalInput').value = fetchedCal;
+                        statusBadge.innerText = `✅ [공공DB 성공] ${item.DESC_KOR}: 약 ${fetchedCal} kcal`;
+                        statusBadge.style.color = "#2E7D32";
+                        return;
+                    }
+                }
+                throw new Error("DB 검색 결과 없음");
 
             } catch (err) {
-                lastErrorMsg = err.message;
+                // [로직 3] 안전장치 가동 (로컬 백업 DB & 카테고리 기반 추정)
+                runSafetyFallback(searchKeyword, statusBadge);
             }
         }
 
-        if (!success) {
-            resDiv.innerHTML = `
-            <div class="error-box">
-                <b>⚠️ 404 에러가 계속 발생할 때 해결 방법 (프로젝트 설정)</b><br><br>
-                현재 사용 중이신 프로젝트에 구글 AI API가 비활성화된 상태입니다.<br>
-                <b>1분 안에 해결책:</b><br>
-                1. <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#b91c1c; font-weight:bold; text-decoration:underline;">Google AI Studio</a> 페이지로 이동합니다.<br>
-                2. <b>'Create API Key'</b> 버튼 클릭 ➔ <b>'Create API key in new project'</b> (새 프로젝트에서 만들기) 선택!<br>
-                3. 새로 생성된 키를 상단의 [🔑 키 수정하기] 버튼을 눌러 입력해 주시면 즉시 해결됩니다!
-            </div>`;
-            applyBtn.style.display = 'none';
+        // 🛡️ 안전장치 로직 (네트워크 오류나 DB 미등록 시 작동)
+        function runSafetyFallback(keyword, statusBadge) {
+            // 1. 로컬 백업 DB에서 유사 단어 검색
+            const matched = localSafetyDb.find(item => keyword.includes(item.name) || item.name.includes(keyword));
+
+            if (matched) {
+                document.getElementById('cheatCalInput').value = matched.cal;
+                statusBadge.innerText = `🛡️ [안전장치 계산] ${matched.name} (${matched.desc}) : 약 ${matched.cal} kcal`;
+                statusBadge.style.color = "#D81B60";
+            } else {
+                // 2. 키워드 성격 분석으로 추정치 산출
+                let estimatedCal = 650;
+                if (keyword.includes("치킨") || keyword.includes("튀김") || keyword.includes("피자")) estimatedCal = 1600;
+                else if (keyword.includes("떡볶이") || keyword.includes("면") || keyword.includes("탕")) estimatedCal = 900;
+                else if (keyword.includes("고기") || keyword.includes("구이")) estimatedCal = 1100;
+
+                document.getElementById('cheatCalInput').value = estimatedCal;
+                statusBadge.innerText = `💡 [스마트 추정] '${keyword}' 표준 카테고리 예상치: 약 ${estimatedCal} kcal`;
+                statusBadge.style.color = "#E65100";
+            }
         }
 
-        btn.disabled = false;
-        btn.innerText = "✨ 50%/35%/15% AI 스케줄 생성";
-    }
+        function updateMacroEquivalents() {
+            const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
+            const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
+            const fat = parseFloat(document.getElementById('inputFat').value) || 0;
+            const fiber = parseFloat(document.getElementById('inputFiber').value) || 0;
 
-    function applyAiToCalendar() {
-        if (aiGeneratedEvents.length === 0) return;
+            const riceBowls = (carb / 70).toFixed(1);
+            const chickenBreasts = (protein / 25).toFixed(1);
+            const almonds = Math.round(fat / 0.5);
+            const cabbages = (fiber / 25).toFixed(1);
 
-        events = events.concat(aiGeneratedEvents);
-        renderCalendar(currentYear, currentMonth);
-        if(selectedDateStr) selectDate(selectedDateStr);
+            document.getElementById('carbEquiv').innerText = `🍚 쌀밥 약 ${riceBowls}공기`;
+            document.getElementById('proteinEquiv').innerText = `🍗 닭가슴살 약 ${chickenBreasts}개`;
+            document.getElementById('fatEquiv').innerText = `🥜 아몬드 약 ${almonds}알`;
+            document.getElementById('fiberEquiv').innerText = `🥬 양배추 약 ${cabbages}개`;
+        }
 
-        alert(`🎉 ${aiGeneratedEvents.length}일간의 공부 스케줄이 캘린더에 일괄 등록되었습니다!`);
-        document.getElementById('aiResult').style.display = 'none';
-        document.getElementById('applyAiBtn').style.display = 'none';
-    }
-</script>
+        function renderTodayMeals() {
+            const todayKey = getFormattedDate(new Date());
+            document.getElementById('todayDateStr').innerText = todayKey;
+
+            const todayData = mealData[todayKey] || {};
+
+            const updateSlot = (boxId, contentId, tagId, calId, text, calValue) => {
+                const box = document.getElementById(boxId);
+                const content = document.getElementById(contentId);
+                const tag = document.getElementById(tagId);
+                const calBadge = document.getElementById(calId);
+
+                if (text) {
+                    content.innerText = text;
+                    calBadge.innerText = `${calValue || 0} kcal`;
+                    if (text.includes('[치팅]')) {
+                        box.classList.add('is-cheat');
+                        tag.style.display = 'inline-block';
+                    } else {
+                        box.classList.remove('is-cheat');
+                        tag.style.display = 'none';
+                    }
+                } else {
+                    content.innerText = "등록 없음";
+                    calBadge.innerText = "- kcal";
+                    box.classList.remove('is-cheat');
+                    tag.style.display = 'none';
+                }
+            };
+
+            updateSlot('breakfastBox', 'todayBreakfastContent', 'breakfastCheatTag', 'breakfastCal', todayData.breakfast, todayData.bCal);
+            updateSlot('lunchBox', 'todayLunchContent', 'lunchCheatTag', 'lunchCal', todayData.lunch, todayData.lCal);
+            updateSlot('dinnerBox', 'todayDinnerContent', 'dinnerCheatTag', 'dinnerCal', todayData.dinner, todayData.dCal);
+
+            const total = (todayData.bCal || 0) + (todayData.lCal || 0) + (todayData.dCal || 0);
+            document.getElementById('todayTotalCalDisplay').innerText = `${total.toLocaleString()} kcal`;
+        }
+
+        function calculateStats() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay());
+            startOfWeek.setHours(0,0,0,0);
+
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(endOfWeek.getDate() + 6);
+            endOfWeek.setHours(23,59,59,999);
+
+            let weekTotal = 0, weekDaysCount = 0;
+            let monthTotal = 0, monthDaysCount = 0;
+
+            for (let dateKey in mealData) {
+                const item = mealData[dateKey];
+                const dayCal = (item.bCal || 0) + (item.lCal || 0) + (item.dCal || 0);
+
+                if (dayCal <= 0) continue;
+
+                const targetDate = new Date(dateKey + "T00:00:00");
+
+                if (targetDate >= startOfWeek && targetDate <= endOfWeek) {
+                    weekTotal += dayCal;
+                    weekDaysCount++;
+                }
+
+                if (targetDate.getFullYear() === currentYear && targetDate.getMonth() === currentMonth) {
+                    monthTotal += dayCal;
+                    monthDaysCount++;
+                }
+            }
+
+            const weekAvg = weekDaysCount > 0 ? Math.round(weekTotal / weekDaysCount) : 0;
+            const monthAvg = monthDaysCount > 0 ? Math.round(monthTotal / monthDaysCount) : 0;
+
+            document.getElementById('weekTotalCal').innerText = `${weekTotal.toLocaleString()} kcal`;
+            document.getElementById('weekAvgCal').innerText = `${weekAvg.toLocaleString()} kcal`;
+            document.getElementById('monthTotalCal').innerText = `${monthTotal.toLocaleString()} kcal`;
+            document.getElementById('monthAvgCal').innerText = `${monthAvg.toLocaleString()} kcal`;
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            if (currentCalendarMode === 'week') {
+                grid.className = 'calendar-grid-week';
+                renderWeekView(grid);
+            } else {
+                grid.className = 'calendar-grid-month';
+                renderMonthView(grid);
+            }
+        }
+
+        function renderWeekView(container) {
+            const startOfWeek = new Date(calendarBaseDate);
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(endOfWeek.getDate() + 6);
+
+            document.getElementById('calendarTitle').innerText = 
+                `${startOfWeek.getMonth() + 1}.${startOfWeek.getDate()} ~ ${endOfWeek.getMonth() + 1}.${endOfWeek.getDate()}`;
+
+            for (let i = 0; i < 7; i++) {
+                const day = new Date(startOfWeek);
+                day.setDate(day.getDate() + i);
+                container.appendChild(createDayCard(day));
+            }
+        }
+
+        function renderMonthView(container) {
+            const year = calendarBaseDate.getFullYear();
+            const month = calendarBaseDate.getMonth();
+
+            document.getElementById('calendarTitle').innerText = `${year}년 ${month + 1}월`;
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const empty = document.createElement('div');
+                empty.style.background = 'transparent';
+                container.appendChild(empty);
+            }
+
+            for (let d = 1; d <= lastDay.getDate(); d++) {
+                const day = new Date(year, month, d);
+                container.appendChild(createDayCard(day));
+            }
+        }
+
+        function createDayCard(date) {
+            const key = getFormattedDate(date);
+            const card = document.createElement('div');
+            card.className = 'day-card';
+
+            if (key === getFormattedDate(new Date())) card.classList.add('today');
+
+            const daysStr = ['일', '월', '화', '수', '목', '금', '토'];
+            card.innerHTML = `<div class="day-number">${date.getDate()} (${daysStr[date.getDay()]})</div>`;
+
+            if (mealData[key]) {
+                const data = mealData[key];
+                const appendSlot = (label, text) => {
+                    if (!text) return;
+                    const isCheat = text.includes('[치팅]');
+                    const slotClass = isCheat ? 'day-meal cheat-meal-slot' : 'day-meal';
+                    card.innerHTML += `<div class="${slotClass}">${label}: ${text.replace('[치팅] ', '')}</div>`;
+                };
+
+                appendSlot('아', data.breakfast);
+                appendSlot('점', data.lunch);
+                appendSlot('저', data.dinner);
+
+                const totalCal = (data.bCal || 0) + (data.lCal || 0) + (data.dCal || 0);
+                if (totalCal > 0) {
+                    card.innerHTML += `<div class="day-cal-total">${totalCal} kcal</div>`;
+                }
+            }
+
+            return card;
+        }
+
+        function toggleCalendarView() {
+            currentCalendarMode = (currentCalendarMode === 'week') ? 'month' : 'week';
+            document.getElementById('viewToggleBtn').innerText = (currentCalendarMode === 'week') ? '월간 보기' : '주간 보기';
+            renderCalendar();
+        }
+
+        function navigateCalendar(dir) {
+            if (currentCalendarMode === 'week') {
+                calendarBaseDate.setDate(calendarBaseDate.getDate() + (dir * 7));
+            } else {
+                calendarBaseDate.setMonth(calendarBaseDate.getMonth() + dir);
+            }
+            renderCalendar();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}Form`).classList.add('active');
+        }
+
+        function selectFocus(btn, type) {
+            document.querySelectorAll('.focus-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedFocus = type;
+        }
+
+        function setCheatPreset(menuName, cal) {
+            document.getElementById('cheatMenuInput').value = menuName;
+            document.getElementById('cheatCalInput').value = cal;
+            document.getElementById('dbStatusBadge').innerText = `✨ 프리셋 선택: ${menuName} (${cal} kcal)`;
+        }
+
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generateByMacros() {
+            const carb = parseFloat(document.getElementById('inputCarb').value) || 0;
+            const protein = parseFloat(document.getElementById('inputProtein').value) || 0;
+            const fat = parseFloat(document.getElementById('inputFat').value) || 0;
+            const startDateStr = document.getElementById('macroStartDate').value;
+            const days = parseInt(document.getElementById('macroDays').value);
+
+            if (!startDateStr || !days) return alert("시작일과 적용 기간을 입력하세요.");
+
+            const totalCal = Math.round((carb * 4) + (protein * 4) + (fat * 9));
+            const bCal = Math.round(totalCal * 0.3);
+            const lCal = Math.round(totalCal * 0.4);
+            const dCal = Math.round(totalCal * 0.3);
+
+            pendingPlan = [];
+            let curr = new Date(startDateStr);
+
+            for (let i = 0; i < days; i++) {
+                const dateKey = getFormattedDate(curr);
+                pendingPlan.push({
+                    date: dateKey,
+                    breakfast: `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}`,
+                    lunch: `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`,
+                    dinner: `${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`,
+                    bCal, lCal, dCal,
+                    desc: `총 ${totalCal} kcal`
+                });
+                curr.setDate(curr.getDate() + 1);
+            }
+
+            showPreviewModal();
+        }
+
+        function generateByCalories() {
+            const cal = parseInt(document.getElementById('inputCalorie').value) || 2000;
+            const startDateStr = document.getElementById('calStartDate').value;
+            const endDateStr = document.getElementById('calEndDate').value;
+
+            if (!startDateStr || !endDateStr) return alert("날짜를 지정해주세요.");
+
+            let curr = new Date(startDateStr);
+            let end = new Date(endDateStr);
+
+            const bCal = Math.round(cal * 0.3);
+            const lCal = Math.round(cal * 0.4);
+            const dCal = Math.round(cal * 0.3);
+
+            pendingPlan = [];
+
+            while (curr <= end) {
+                const dateKey = getFormattedDate(curr);
+                let breakfast, lunch, dinner;
+
+                if (selectedFocus === 'protein') {
+                    breakfast = `${getRandomItem(dbProteins)}, 계란 1개`;
+                    lunch = `잡곡밥, ${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`;
+                    dinner = `소고기 샐러드, ${getRandomItem(dbProteins)}`;
+                } else if (selectedFocus === 'fiber') {
+                    breakfast = `오트밀, ${getRandomItem(dbFibers)}`;
+                    lunch = `현미밥, ${getRandomItem(dbProteins)}, ${getRandomItem(dbFibers)}`;
+                    dinner = `야채 샐러드, 두부구이`;
+                } else {
+                    breakfast = `${getRandomItem(dbCarbs)}, 바나나 1개`;
+                    lunch = `${getRandomItem(dbCarbs)}, ${getRandomItem(dbProteins)}, 야채`;
+                    dinner = `찐 고구마 2개, ${getRandomItem(dbProteins)}`;
+                }
+
+                pendingPlan.push({
+                    date: dateKey,
+                    breakfast, lunch, dinner,
+                    bCal, lCal, dCal,
+                    desc: `목표: ${cal} kcal`
+                });
+
+                curr.setDate(curr.getDate() + 1);
+            }
+
+            showPreviewModal();
+        }
+
+        function addCheatMeal() {
+            const menu = document.getElementById('cheatMenuInput').value.trim();
+            const cheatCal = parseInt(document.getElementById('cheatCalInput').value) || 500;
+            const dateKey = document.getElementById('cheatDate').value;
+            const mealType = document.getElementById('cheatMealType').value;
+
+            if (!menu || !dateKey) return alert("치팅 메뉴와 날짜를 입력해주세요.");
+
+            if (!mealData[dateKey]) {
+                mealData[dateKey] = {
+                    breakfast: "클린식", bCal: 400,
+                    lunch: "클린식", lCal: 600,
+                    dinner: "클린식", dCal: 500
+                };
+            }
+
+            const cheatFormat = `[치팅] ${menu}`;
+
+            if (mealType === 'all') {
+                const perMealCal = Math.round(cheatCal / 3);
+                mealData[dateKey].breakfast = cheatFormat; mealData[dateKey].bCal = perMealCal;
+                mealData[dateKey].lunch = cheatFormat; mealData[dateKey].lCal = perMealCal;
+                mealData[dateKey].dinner = cheatFormat; mealData[dateKey].dCal = perMealCal;
+            } else {
+                mealData[dateKey][mealType] = cheatFormat;
+                mealData[dateKey][`${mealType.charAt(0)}Cal`] = cheatCal;
+            }
+
+            localStorage.setItem('mealDataStore', JSON.stringify(mealData));
+
+            alert(`🎉 ${dateKey} 식단에 ${menu} (${cheatCal} kcal) 치팅 데이가 등록되었습니다!`);
+            renderTodayMeals();
+            renderCalendar();
+            calculateStats();
+            document.getElementById('cheatMenuInput').value = '';
+        }
+
+        function showPreviewModal() {
+            const listContainer = document.getElementById('previewList');
+            listContainer.innerHTML = '';
+
+            pendingPlan.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'preview-item';
+                item.innerHTML = `
+                    <strong>📅 ${p.date}</strong> <span style="font-size:0.75rem; color:#888;">(${p.desc})</span><br>
+                    • 아침: ${p.breakfast}<br>
+                    • 점심: ${p.lunch}<br>
+                    • 저녁: ${p.dinner}
+                `;
+                listContainer.appendChild(item);
+            });
+
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function confirmAndSave() {
+            pendingPlan.forEach(p => {
+                mealData[p.date] = {
+                    breakfast: p.breakfast, bCal: p.bCal,
+                    lunch: p.lunch, lCal: p.lCal,
+                    dinner: p.dinner, dCal: p.dCal
+                };
+            });
+
+            localStorage.setItem('mealDataStore', JSON.stringify(mealData));
+
+            closeModal();
+            renderTodayMeals();
+            renderCalendar();
+            calculateStats();
+            alert("식단이 정상 적용되었습니다!");
+        }
+    </script>
 </body>
 </html>
