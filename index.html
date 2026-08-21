@@ -303,10 +303,10 @@
         .form-section { display: none; }
         .form-section.active { display: block; }
 
-        /* 💡 탄단지 1:1 좌우 균형 + 분리형 독립 박스 레이아웃 */
+        /* 💡 탄단지 6:4 최적 비율 + 개별 분리 박스 레이아웃 */
         .macro-box-grid { 
             display: grid; 
-            grid-template-columns: 1fr 1fr; 
+            grid-template-columns: 6fr 4fr; /* ✨ 6:4 비율 적용 */
             gap: 10px; 
             margin-bottom: 12px; 
         }
@@ -319,6 +319,7 @@
             margin-bottom: 8px;
             padding-bottom: 4px;
             border-bottom: 2px solid #F48FB1;
+            white-space: nowrap;
         }
 
         .macro-row-card { 
@@ -337,7 +338,7 @@
         }
 
         .macro-row-card input { 
-            width: 54px; 
+            width: 58px; 
             text-align: center; 
             padding: 4px; 
             border: 1px solid #F48FB1; 
@@ -355,8 +356,8 @@
             border: 1px solid #FFCDD2; 
             color: var(--primary-dark); 
             font-weight: bold; 
-            font-size: 0.78rem; 
-            min-width: 55px; 
+            font-size: 0.75rem; 
+            white-space: nowrap;
             text-align: center; 
         }
 
@@ -593,11 +594,11 @@
             <button class="tab-btn" onclick="switchTab('cheat', event)">🎉 치팅 데이!</button>
         </div>
 
-        <!-- 탭 1: 탄단지 입력 (각 항목별 독립 개별 박스 복구 + 땅콩 이모지 반영) -->
+        <!-- 탭 1: 탄단지 입력 (6:4 최적화 비율 적용) -->
         <div id="macrosForm" class="form-section active">
             <div class="macro-box-grid">
                 
-                <!-- 좌측 컬럼: 개별 영양소 입력 박스들 -->
+                <!-- 좌측 컬럼 (6 비율): 영양소 입력 -->
                 <div>
                     <div class="macro-column-title">⚙️ 영양소 입력 (g)</div>
                     <div class="macro-row-card">
@@ -614,7 +615,7 @@
                     </div>
                 </div>
 
-                <!-- 우측 컬럼: 개별 음식 예상 환산 박스들 -->
+                <!-- 우측 컬럼 (4 비율): 음식 환산 표시 -->
                 <div>
                     <div class="macro-column-title">⚖️ 음식 예상 환산</div>
                     <div class="macro-row-card">
@@ -626,7 +627,7 @@
                         <span class="gram-value" id="proteinEquiv">약 4.0개</span>
                     </div>
                     <div class="macro-row-card">
-                        <span>🥜 땅콩(견과)</span>
+                        <span>🥜 땅콩</span>
                         <span class="gram-value" id="fatEquiv">약 100알</span>
                     </div>
                 </div>
