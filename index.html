@@ -303,7 +303,7 @@
         .form-section { display: none; }
         .form-section.active { display: block; }
 
-        /* 💡 탄단지 1:1 균형 레이아웃 박스 */
+        /* 💡 탄단지 1:1 좌우 균형 + 분리형 독립 박스 레이아웃 */
         .macro-box-grid { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
@@ -311,39 +311,33 @@
             margin-bottom: 12px; 
         }
 
-        .macro-card { 
+        .macro-column-title {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            text-align: center;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #F48FB1;
+        }
+
+        .macro-row-card { 
             background: #FFF0F5; 
             border: 1px solid #FFCDD2; 
-            border-radius: 12px; 
-            padding: 12px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-            min-height: 165px;
-        }
-
-        .macro-card-title { 
-            font-size: 0.8rem; 
-            font-weight: bold; 
-            color: var(--primary-dark); 
-            text-align: center; 
-            padding-bottom: 6px; 
-            border-bottom: 1px dashed #F48FB1; 
-            margin-bottom: 8px; 
-        }
-
-        .macro-row { 
+            border-radius: 10px; 
+            padding: 8px 10px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
             font-size: 0.78rem; 
             font-weight: bold; 
             color: #444; 
-            margin-bottom: 6px; 
+            margin-bottom: 8px; 
+            min-height: 42px;
         }
 
-        .macro-row input { 
-            width: 52px; 
+        .macro-row-card input { 
+            width: 54px; 
             text-align: center; 
             padding: 4px; 
             border: 1px solid #F48FB1; 
@@ -351,6 +345,7 @@
             font-weight: bold; 
             font-size: 0.8rem; 
             outline: none;
+            background: #FFFFFF;
         }
 
         .gram-value { 
@@ -598,42 +593,44 @@
             <button class="tab-btn" onclick="switchTab('cheat', event)">🎉 치팅 데이!</button>
         </div>
 
-        <!-- 탭 1: 탄단지 입력 (1:1 비율 박스 개선 적용) -->
+        <!-- 탭 1: 탄단지 입력 (각 항목별 독립 개별 박스 복구 + 땅콩 이모지 반영) -->
         <div id="macrosForm" class="form-section active">
             <div class="macro-box-grid">
-                <!-- 좌측 박스: 목표 입력 (g) -->
-                <div class="macro-card">
-                    <div class="macro-card-title">⚙️ 영양소 입력 (g)</div>
-                    <div class="macro-row">
+                
+                <!-- 좌측 컬럼: 개별 영양소 입력 박스들 -->
+                <div>
+                    <div class="macro-column-title">⚙️ 영양소 입력 (g)</div>
+                    <div class="macro-row-card">
                         <span>🌾 탄수화물</span>
                         <input type="number" id="inputCarb" value="200" oninput="updateMacroEquivalents()">
                     </div>
-                    <div class="macro-row">
+                    <div class="macro-row-card">
                         <span>🍗 단백질</span>
                         <input type="number" id="inputProtein" value="100" oninput="updateMacroEquivalents()">
                     </div>
-                    <div class="macro-row">
-                        <span>🥑 지방</span>
+                    <div class="macro-row-card">
+                        <span>🥜 지방</span>
                         <input type="number" id="inputFat" value="50" oninput="updateMacroEquivalents()">
                     </div>
                 </div>
 
-                <!-- 우측 박스: 음식 환산 수량 (g 기준) -->
-                <div class="macro-card">
-                    <div class="macro-card-title">⚖️ 음식 예상 환산</div>
-                    <div class="macro-row">
+                <!-- 우측 컬럼: 개별 음식 예상 환산 박스들 -->
+                <div>
+                    <div class="macro-column-title">⚖️ 음식 예상 환산</div>
+                    <div class="macro-row-card">
                         <span>🌾 쌀밥</span>
                         <span class="gram-value" id="carbEquiv">약 2.9공기</span>
                     </div>
-                    <div class="macro-row">
+                    <div class="macro-row-card">
                         <span>🍗 닭가슴살</span>
                         <span class="gram-value" id="proteinEquiv">약 4.0개</span>
                     </div>
-                    <div class="macro-row">
-                        <span>🥑 아몬드</span>
+                    <div class="macro-row-card">
+                        <span>🥜 땅콩(견과)</span>
                         <span class="gram-value" id="fatEquiv">약 100알</span>
                     </div>
                 </div>
+
             </div>
 
             <div class="input-grid">
@@ -892,11 +889,11 @@
 
             const riceBowls = (carb / 70).toFixed(1);
             const chickenBreasts = (protein / 25).toFixed(1);
-            const almonds = Math.round(fat * 2);
+            const peanuts = Math.round(fat * 2);
 
             document.getElementById('carbEquiv').innerText = `약 ${riceBowls}공기`;
             document.getElementById('proteinEquiv').innerText = `약 ${chickenBreasts}개`;
-            document.getElementById('fatEquiv').innerText = `약 ${almonds}알`;
+            document.getElementById('fatEquiv').innerText = `약 ${peanuts}알`;
         }
 
         function renderTodayMeals() {
